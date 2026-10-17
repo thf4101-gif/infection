@@ -1,0 +1,6 @@
+{
+  "name": "등교중지 필요한 질병 찾기",
+  "description": "초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (감염병 관리대장 연동)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

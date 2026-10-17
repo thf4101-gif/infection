@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>등교중지 필요한 질병 찾기 - 초등학교 보건실</title>
+  <meta name="description" content="초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (감염병 관리대장 연동)" />
+  <meta property="og:title" content="등교중지 필요한 질병 찾기 - 초등학교 보건실" />
+  <meta property="og:description" content="초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (감염병 관리대장 연동)" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-content">
+        <div class="title-group">
+          <span class="cross-icon">🏥</span>
+          <div>
+            <h1>등교중지 필요한 질병 찾기</h1>
+            <p class="subtitle">초등학교 학생 감염병 예방·관리 지침 및 질병관리청 기준</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btnOpenSheetSettings" class="btn-subtle" title="구글 스프레드시트 연동 설정">
+            <span class="btn-icon">📊</span> 구글 시트 연동 설정
+          </button>
+          <span id="sheetStatusBadge" class="sheet-badge disconnected">미연결</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- [상단] 질병명 검색 영역 -->
+    <section class="section search-section">
+      <div class="search-box-container">
+        <label for="diseaseSearchInput" class="search-label">
+          <strong>질병명 또는 질병코드 검색</strong>
+          <span class="search-tip">(질병명 예: 수두, 독감, 수족구, 홍역 / 코드 예: B01, J10, B08.4)</span>
+        </label>
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="diseaseSearchInput" 
+            placeholder="질병명이나 질병코드를 입력하면 자동으로 감염병 지침을 찾습니다..." 
+            autocomplete="off"
+          />
+          <button type="button" id="btnClearSearch" class="btn-clear" aria-label="검색어 지우기">&times;</button>
+        </div>
+        <!-- 자동완성 제안 목록 드롭다운 -->
+        <div id="autocompleteList" class="autocomplete-dropdown hidden"></div>
+      </div>
+
+      <!-- 빠른 선택 칩 -->
+      <div class="quick-chips-wrapper">
+        <span class="quick-chips-label">자주 찾는 감염병:</span>
+        <div class="quick-chips" id="quickChipsContainer">
+          <!-- JS로 동적 생성 및 클릭 시 즉시 선택 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- [중앙] 2열 레이아웃: 왼쪽(학생 인적사항) / 오른쪽(등교중지 근거) -->
+    <main class="main-content-grid">
+      <!-- [왼쪽] 학생 인적사항 및 감염병 관리대장 입력 -->
+      <section class="card left-card">
+        <div class="card-header">
+          <h2>👤 학생 인적사항 및 관리대장 기록</h2>
+          <span class="badge-tag">감염병 관리대장</span>
+        </div>
+
+        <form id="studentRecordForm" class="form-grid">
+          <!-- 학년 / 반 / 번호 -->
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="inputGrade">학년 <span class="required">*</span></label>
+              <select id="inputGrade" required>
+                <option value="">선택</option>
+                <option value="1학년">1학년</option>
+                <option value="2학년">2학년</option>
+                <option value="3학년">3학년</option>
+                <option value="4학년">4학년</option>
+                <option value="5학년">5학년</option>
+                <option value="6학년">6학년</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputClass">반 <span class="required">*</span></label>
+              <input type="text" id="inputClass" placeholder="예: 3반" required />
+            </div>
+            <div class="form-group">
+              <label for="inputNumber">번호</label>
+              <input type="number" id="inputNumber" placeholder="예: 15" min="1" max="99" />
+            </div>
+          </div>
+
+          <!-- 성명 / 성별 -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="inputName">학생 성명 <span class="required">*</span></label>
+              <input type="text" id="inputName" placeholder="홍길동" required />
+            </div>
+            <div class="form-group">
+              <label for="inputGender">성별 <span class="required">*</span></label>
+              <select id="inputGender" required>
+                <option value="">선택</option>
+                <option value="남">남</option>
+                <option value="여">여</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 증상 발생 일자 / 입원 여부 -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="inputSymptomDate">증상 발생 일자 <span class="required">*</span></label>
+              <input type="date" id="inputSymptomDate" required />
+            </div>
+            <div class="form-group">
+              <label for="inputHospitalized">입원 여부</label>
+              <select id="inputHospitalized">
+                <option value="아니오">아니오(자가격리/외래)</option>
+                <option value="예">예(병원 입원)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 주증상 -->
+          <div class="form-group">
+            <label for="inputSymptoms">주증상 (발열, 기침, 발진 등)</label>
+            <input type="text" id="inputSymptoms" placeholder="예: 38.2℃ 발열, 전신 수포성 발진, 가려움증" />
+          </div>
+
+          <!-- 계산된 등교중지 기간 및 등교일 -->
+          <div class="form-highlight-box">
+            <div class="highlight-title">🗓️ 출석인정 등교중지 산정</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="inputSuspendPeriod">등교중지 기간 (자동계산/수정가능)</label>
+                <input type="text" id="inputSuspendPeriod" placeholder="질병 선택 시 자동 계산됩니다" />
+              </div>
+              <div class="form-group">
+                <label for="inputReturnDate">예상 등교일 (등교 가능한 날)</label>
+                <input type="date" id="inputReturnDate" />
+              </div>
+            </div>
+            <p class="field-hint" id="calcPeriodHint">증상 발생 일자와 질병 격리 기준에 따라 자동 권고됩니다.</p>
+          </div>
+
+          <!-- 나이스(NEIS) 보고여부 -->
+          <div class="form-group">
+            <label for="inputNeisReported">나이스(NEIS) 보고여부 <span class="required">*</span></label>
+            <select id="inputNeisReported" required>
+              <option value="미보고">미보고 (작성 대기)</option>
+              <option value="보고완료">보고완료</option>
+              <option value="해당없음(비보고대상)">해당없음 (비보고 대상)</option>
+            </select>
+          </div>
+        </form>
+      </section>
+
+      <!-- [오른쪽] 등교중지 여부를 결정한 근거 내용 -->
+      <section class="card right-card">
+        <div class="card-header">
+          <h2>📋 등교중지 여부 결정 근거 및 지침</h2>
+          <span id="selectedDiseaseBadge" class="badge-tag">선택 대기</span>
+        </div>
+
+        <div id="decisionBasisEmpty" class="basis-empty-state">
+          <div class="empty-icon">🔎</div>
+          <p class="empty-title">질병을 검색하거나 선택해주세요</p>
+          <p class="empty-desc">상단 검색창에 질병명 또는 코드를 입력하시면 질병관리청 및 교육청 지침에 따른 등교중지 판정 기준과 출결 인정 서류 안내가 나타납니다.</p>
+        </div>
+
+        <div id="decisionBasisContent" class="basis-content hidden">
+          <div class="basis-top-meta">
+            <div class="meta-item">
+              <span class="meta-label">법정 감염병 분류</span>
+              <span id="basisLegalGrade" class="meta-val">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">질병코드 (KCD/ICD)</span>
+              <span id="basisDiseaseCode" class="meta-val code-val">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">NEIS 법정보고</span>
+              <span id="basisNeisDuty" class="meta-val">-</span>
+            </div>
+          </div>
+
+          <div class="basis-block">
+            <h3 class="block-title">📌 등교중지(격리) 판정 기준</h3>
+            <div id="basisCriteria" class="block-body emphasis-text"></div>
+          </div>
+
+          <div class="basis-block">
+            <h3 class="block-title">🩺 등교 재개(해제) 조건</h3>
+            <div id="basisReleaseCondition" class="block-body"></div>
+          </div>
+
+          <div class="basis-block">
+            <h3 class="block-title">📄 출석인정결석 증빙 제출 서류</h3>
+            <div id="basisDocumentReq" class="block-body document-box"></div>
+          </div>
+
+          <div class="basis-block">
+            <h3 class="block-title">💡 보건실 안내 및 가정통신 유의사항</h3>
+            <div id="basisTeacherNotice" class="block-body notice-box"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- [하단] 등교중지 필요/권고/필요없음 안내 & 대장 등록 액션 -->
+    <section class="section bottom-decision-section">
+      <div id="decisionBanner" class="decision-banner default-state">
+        <div class="decision-icon" id="decisionIcon">ℹ️</div>
+        <div class="decision-text-group">
+          <div class="decision-headline-row">
+            <h2 id="decisionStatusTitle">질병을 선택하면 등교중지 여부가 안내됩니다</h2>
+            <span id="decisionStatusPill" class="decision-pill status-ready">대기</span>
+          </div>
+          <p id="decisionSummaryText" class="decision-summary">
+            질병명과 증상 발생 일자를 입력하시면 정확한 등교중지 필요 여부와 권고 기간이 산출됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 액션 버튼 바 -->
+      <div class="action-buttons-bar">
+        <button type="button" id="btnSaveToSheet" class="btn btn-primary">
+          <span class="btn-icon">📥</span> 구글 감염병 관리대장에 등록
+        </button>
+        <button type="button" id="btnCopyResult" class="btn btn-secondary">
+          <span class="btn-icon">📋</span> 결과 및 가정안내문 복사
+        </button>
+        <button type="button" id="btnResetForm" class="btn btn-outline">
+          <span class="btn-icon">🔄</span> 새로 입력
+        </button>
+      </div>
+
+      <!-- 전송 상태 알림 피드백 -->
+      <div id="actionFeedback" class="feedback-msg hidden" role="status"></div>
+    </section>
+
+    <!-- 최근 등록 내역 (로컬 보관 및 백업) -->
+    <section class="section history-section">
+      <div class="history-header">
+        <h3>📑 당일 관리대장 등록 내역 (<span id="historyCount">0</span>건)</h3>
+        <button type="button" id="btnClearHistory" class="btn-link">내역 비우기</button>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>학년/반</th>
+              <th>성명</th>
+              <th>질환명</th>
+              <th>증상일자</th>
+              <th>등교중지 기간</th>
+              <th>예상등교일</th>
+              <th>나이스</th>
+              <th>시트전송</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr class="empty-row">
+              <td colspan="9">아직 등록된 학생 기록이 없습니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+      <p>근거 자료: 질병관리청 감염병포털 및 교육부 「학생 감염병 예방·위기대응 매뉴얼」</p>
+      <p class="footer-sub">※ 본 도구는 보건교사의 신속한 판단을 돕기 위한 보조 도구이며, 개별 학생의 증상 및 주치의 소견서에 따라 최종 등교일이 달라질 수 있습니다.</p>
+    </footer>
+  </div>
+
+  <!-- 구글 시트 연동 설정 모달 -->
+  <div id="sheetModal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>📊 구글 스프레드시트 연동 설정</h3>
+        <button type="button" id="btnCloseModal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          학교 구글 계정으로 생성한 Google Apps Script(웹 앱) URL을 등록하시면 클릭 한 번으로 감염병 관리대장 시트에 자동 누적됩니다.
+        </p>
+
+        <div class="modal-schema-guide">
+          <strong>스프레드시트 11개 열(스키마) 순서:</strong>
+          <ol class="schema-list">
+            <li>학년</li>
+            <li>반</li>
+            <li>성별</li>
+            <li>성명</li>
+            <li>질환명</li>
+            <li>증상 발생 일자</li>
+            <li>등교중지 기간</li>
+            <li>등교일</li>
+            <li>주증상</li>
+            <li>입원여부</li>
+            <li>나이스 보고여부</li>
+          </ol>
+        </div>
+
+        <div class="form-group">
+          <label for="inputAppsScriptUrl">Google Apps Script 웹 앱 배포 URL</label>
+          <input 
+            type="url" 
+            id="inputAppsScriptUrl" 
+            placeholder="https://script.google.com/macros/s/.../exec"
+          />
+          <small class="field-help">자세한 연결법은 첨부된 <strong>setup.md</strong> 가이드를 참고하세요.</small>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="btnTestConnection" class="btn btn-secondary">
+            <span class="btn-icon">⚡</span> 연동 테스트
+          </button>
+          <button type="button" id="btnSaveSheetUrl" class="btn btn-primary">
+            저장하기
+          </button>
+        </div>
+
+        <div id="modalTestResult" class="modal-test-result hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 컨테이너 -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- 순수 자바스크립트 연결 (상대 경로 ./app.js) -->
+  <script src="./app.js"></script>
+</body>
+</html>
