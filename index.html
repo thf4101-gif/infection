@@ -146,20 +146,16 @@
             <input type="text" id="inputSymptoms" placeholder="예: 38.2℃ 발열, 전신 수포성 발진, 기침, 인후통" />
           </div>
 
-          <!-- 계산된 등교중지 기간 및 등교일 -->
-          <div class="form-highlight-box swatch-box">
-            <div class="highlight-title">🗓️ 출석인정 등교중지 산정 (교육부 지침 기준)</div>
-            <div class="form-row-2">
-              <div class="form-group">
-                <label for="inputSuspendPeriod">등교중지 기간 (자동계산/수정가능)</label>
-                <input type="text" id="inputSuspendPeriod" placeholder="질병 선택 시 자동 계산됩니다" />
-              </div>
-              <div class="form-group">
-                <label for="inputReturnDate">예상 등교일 (등교 가능한 날)</label>
-                <input type="date" id="inputReturnDate" />
-              </div>
+          <!-- 등교중지 시작일 / 실제 등교일 -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="inputSuspendStartDate">등교중지 시작일 <span class="required">*</span></label>
+              <input type="date" id="inputSuspendStartDate" required />
             </div>
-            <p class="field-hint" id="calcPeriodHint">증상 발생 일자와 질병 격리 기준에 따라 자동 권고됩니다.</p>
+            <div class="form-group">
+              <label for="inputReturnDate">실제 등교일</label>
+              <input type="date" id="inputReturnDate" />
+            </div>
           </div>
 
           <!-- 나이스(NEIS) 보고여부 -->
@@ -238,13 +234,34 @@
           </div>
 
           <div class="basis-block">
-            <h3 class="block-title">📌 등교중지(격리) 판정 기준</h3>
+            <h3 class="block-title">📌 등교중지 결정 근거 (판정 기준)</h3>
             <div id="basisCriteria" class="block-body emphasis-text"></div>
           </div>
 
           <div class="basis-block">
             <h3 class="block-title">🩺 등교 재개(해제) 조건</h3>
             <div id="basisReleaseCondition" class="block-body"></div>
+          </div>
+
+          <!-- 출석인정 등교중지 산정 (교육부 지침 기준 예시 안내) -->
+          <div class="basis-block guideline-calc-box">
+            <div class="block-header-with-tag">
+              <h3 class="block-title">🗓️ 출석인정 등교중지 산정 (교육부 지침 기준 예시)</h3>
+              <span class="script-badge">권고 참고용 예시</span>
+            </div>
+            <div class="guideline-example-grid">
+              <div class="example-item">
+                <span class="example-label">지침상 권고 등교중지 기간</span>
+                <span id="exampleSuspendPeriod" class="example-val">-</span>
+              </div>
+              <div class="example-item">
+                <span class="example-label">지침상 권고 등교 가능일</span>
+                <span id="exampleReturnDate" class="example-val">-</span>
+              </div>
+            </div>
+            <p class="field-hint" id="calcPeriodHint">
+              ※ 위 산정은 교육부·질병관리청 지침 기준의 기본 권고 예시입니다. 실제 학생의 등교중지 시작일과 실제 등교일은 주치의 소견 및 학교 상황에 맞추어 왼쪽 폼에 입력해 주세요.
+            </p>
           </div>
 
           <div class="basis-block">
@@ -314,8 +331,8 @@
               <th>성명</th>
               <th>질환명</th>
               <th>증상일자</th>
-              <th>등교중지 기간</th>
-              <th>예상등교일</th>
+              <th>등교중지 시작일</th>
+              <th>실제 등교일</th>
               <th>나이스</th>
               <th>시트전송</th>
             </tr>

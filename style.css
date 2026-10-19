@@ -769,6 +769,52 @@ select:focus {
   font-size: 0.83rem;
 }
 
+/* 교육부 지침 권고 산정 예시 박스 */
+.guideline-calc-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid var(--color-mint);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.guideline-example-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  background: #ffffff;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #dcfce7;
+}
+
+.example-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.example-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #166534;
+}
+
+.example-val {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+@media (max-width: 640px) {
+  .guideline-example-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ============================================================
    4. [하단] 배너 & 액션
 ============================================================ */

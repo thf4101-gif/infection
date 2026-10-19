@@ -784,15 +784,17 @@
     inputSymptomDate: document.getElementById('inputSymptomDate'),
     inputHospitalized: document.getElementById('inputHospitalized'),
     inputSymptoms: document.getElementById('inputSymptoms'),
-    inputSuspendPeriod: document.getElementById('inputSuspendPeriod'),
+    inputSuspendStartDate: document.getElementById('inputSuspendStartDate'),
     inputReturnDate: document.getElementById('inputReturnDate'),
-    calcPeriodHint: document.getElementById('calcPeriodHint'),
     inputNeisReported: document.getElementById('inputNeisReported'),
     studentRecordForm: document.getElementById('studentRecordForm'),
 
     selectedDiseaseBadge: document.getElementById('selectedDiseaseBadge'),
     decisionBasisEmpty: document.getElementById('decisionBasisEmpty'),
     decisionBasisContent: document.getElementById('decisionBasisContent'),
+    exampleSuspendPeriod: document.getElementById('exampleSuspendPeriod'),
+    exampleReturnDate: document.getElementById('exampleReturnDate'),
+    calcPeriodHint: document.getElementById('calcPeriodHint'),
     basisLegalGrade: document.getElementById('basisLegalGrade'),
     basisDiseaseCode: document.getElementById('basisDiseaseCode'),
     basisNeisDuty: document.getElementById('basisNeisDuty'),
@@ -885,6 +887,9 @@
   function initApp() {
     const todayStr = formatDate(new Date());
     elements.inputSymptomDate.value = todayStr;
+    if (elements.inputSuspendStartDate) {
+      elements.inputSuspendStartDate.value = todayStr;
+    }
 
     updateSheetBadge();
 
@@ -1078,15 +1083,19 @@
     const disease = STATE.selectedDisease;
 
     if (!onsetDate) {
-      elements.inputSuspendPeriod.value = '';
-      elements.inputReturnDate.value = '';
+      if (elements.exampleSuspendPeriod) elements.exampleSuspendPeriod.textContent = '-';
+      if (elements.exampleReturnDate) elements.exampleReturnDate.textContent = '-';
       elements.calcPeriodHint.textContent = '증상 발생 일자를 먼저 선택해주세요.';
       return;
     }
 
     if (disease.status === 'none') {
-      elements.inputSuspendPeriod.value = '등교중지 불필요 (정상등교)';
+      if (elements.inputSuspendStartDate && !elements.inputSuspendStartDate.value) {
+        elements.inputSuspendStartDate.value = onsetDate;
+      }
       elements.inputReturnDate.value = onsetDate;
+      if (elements.exampleSuspendPeriod) elements.exampleSuspendPeriod.textContent = '등교중지 불필요 (정상 등교 가능)';
+      if (elements.exampleReturnDate) elements.exampleReturnDate.textContent = `${onsetDate} (정상 등교)`;
       elements.calcPeriodHint.textContent = '비전염성 또는 처치 즉시 등교 가능 질환입니다.';
       return;
     }
@@ -1095,13 +1104,26 @@
     const returnDate = addDays(onsetDate, days);
     const endDate = addDays(onsetDate, Math.max(0, days - 1));
 
-    elements.inputSuspendPeriod.value = `${onsetDate} ~ ${endDate} (약 ${days}일간)`;
-    elements.inputReturnDate.value = returnDate;
+    // 오른쪽 카드: 교육부 지침 권고 산정 예시 기재
+    if (elements.exampleSuspendPeriod) {
+      elements.exampleSuspendPeriod.textContent = `${onsetDate} ~ ${endDate} (권고 약 ${days}일간)`;
+    }
+    if (elements.exampleReturnDate) {
+      elements.exampleReturnDate.textContent = `${returnDate} (권고 등교 가능일)`;
+    }
+
+    // 왼쪽 폼: 등교중지 시작일 및 실제 등교일 기본 추천값 설정
+    if (elements.inputSuspendStartDate && !elements.inputSuspendStartDate.value) {
+      elements.inputSuspendStartDate.value = onsetDate;
+    }
+    if (elements.inputReturnDate && !elements.inputReturnDate.value) {
+      elements.inputReturnDate.value = returnDate;
+    }
 
     if (disease.id === 'influenza') {
-      elements.calcPeriodHint.textContent = '💡 2026 인플루엔자 지침: 해열제 없이 정상체온 회복 후 24시간 경과까지 (해열제 투약 시: 마지막 투약 시점부터 48시간 경과 관찰 후 등교)';
+      elements.calcPeriodHint.textContent = '💡 2026 시설별 인플루엔자 관리 지침 기준: 해열제 없이 정상체온 회복 후 24시간 경과까지 등교중지 (해열제 투약 시에는 마지막 해열제 투약 시점부터 48시간 경과 관찰 후 등교 가능). 위 기간은 5일 권고 기준의 참고 예시이며, 실제 등교일은 학생의 해열 시점에 맞추어 왼쪽 폼에 입력해 주세요.';
     } else {
-      elements.calcPeriodHint.textContent = `기준: ${disease.periodDesc} (담당 의사 소견에 따라 변경 가능)`;
+      elements.calcPeriodHint.textContent = `※ 위 산정은 교육부·질병관리청 지침 기준의 권고 참고용 예시입니다. 실제 학생의 등교중지 시작일과 실제 등교일은 주치의 소견에 맞추어 왼쪽 폼에 입력해 주세요.`;
     }
   }
 
@@ -1143,7 +1165,7 @@
     const name = elements.inputName.value.trim();
     const gender = elements.inputGender.value.trim();
     const symptomDate = elements.inputSymptomDate.value.trim();
-    const suspendPeriod = elements.inputSuspendPeriod.value.trim();
+    const suspendStartDate = elements.inputSuspendStartDate ? elements.inputSuspendStartDate.value.trim() : symptomDate;
     const returnDate = elements.inputReturnDate.value.trim();
     const symptoms = elements.inputSymptoms.value.trim();
     const hospitalized = elements.inputHospitalized.value.trim();
@@ -1180,6 +1202,16 @@
       elements.inputSymptomDate.focus();
       return null;
     }
+    if (!suspendStartDate) {
+      showToast('⚠️ 등교중지 시작일을 입력해주세요.');
+      elements.inputSuspendStartDate.focus();
+      return null;
+    }
+
+    let suspendPeriod = `${suspendStartDate}부터`;
+    if (returnDate) {
+      suspendPeriod = `${suspendStartDate} ~ ${returnDate}`;
+    }
 
     return {
       grade: grade,
@@ -1190,6 +1222,7 @@
       name: name,
       disease: diseaseName,
       symptomDate: symptomDate,
+      suspendStartDate: suspendStartDate,
       suspendPeriod: suspendPeriod,
       returnDate: returnDate,
       symptoms: symptoms || '특이사항 없음',
@@ -1243,6 +1276,7 @@
         name: record.name,
         disease: record.disease,
         symptomDate: record.symptomDate,
+        suspendStartDate: record.suspendStartDate,
         suspendPeriod: record.suspendPeriod,
         returnDate: record.returnDate,
         symptoms: record.symptoms,
@@ -1337,7 +1371,7 @@
       tdOnset.textContent = rec.symptomDate || '-';
 
       const tdPeriod = document.createElement('td');
-      tdPeriod.textContent = rec.suspendPeriod || '-';
+      tdPeriod.textContent = rec.suspendStartDate || rec.suspendPeriod || '-';
 
       const tdReturn = document.createElement('td');
       tdReturn.textContent = rec.returnDate || '-';
@@ -1391,8 +1425,8 @@
 ■ 학생: ${record.grade} ${record.class} ${record.name}
 ■ 질환명: ${diseaseName}
 ■ 증상 발생일: ${record.symptomDate}
-■ 등교중지(출석인정) 기간: ${record.suspendPeriod}
-■ 예상 등교일: ${record.returnDate || '의사 소견에 따름'}
+■ 등교중지 시작일: ${record.suspendStartDate || record.suspendPeriod}
+■ 실제 등교일: ${record.returnDate || '완치 및 등교 가능 소견 후'}
 ■ 등교 재개 기준: ${returnCond}
 ■ 제출 서류: ${docReq}
 
@@ -1440,10 +1474,13 @@
 
     STATE.selectedDisease = null;
 
-    elements.inputSymptomDate.value = formatDate(new Date());
-    elements.inputSuspendPeriod.value = '';
+    const todayStr = formatDate(new Date());
+    elements.inputSymptomDate.value = todayStr;
+    if (elements.inputSuspendStartDate) elements.inputSuspendStartDate.value = todayStr;
     elements.inputReturnDate.value = '';
-    elements.calcPeriodHint.textContent = '증상 발생 일자와 질병 격리 기준에 따라 자동 권고됩니다.';
+    if (elements.exampleSuspendPeriod) elements.exampleSuspendPeriod.textContent = '-';
+    if (elements.exampleReturnDate) elements.exampleReturnDate.textContent = '-';
+    elements.calcPeriodHint.textContent = '질병 선택 시 지침 권고 산정이 안내됩니다.';
 
     elements.decisionBasisEmpty.classList.remove('hidden');
     elements.decisionBasisContent.classList.add('hidden');
@@ -1659,7 +1696,16 @@
       }
     });
 
-    elements.inputSymptomDate.addEventListener('change', calculateDates);
+    elements.inputSymptomDate.addEventListener('change', () => {
+      if (elements.inputSuspendStartDate) {
+        elements.inputSuspendStartDate.value = elements.inputSymptomDate.value;
+      }
+      calculateDates();
+    });
+
+    if (elements.inputSuspendStartDate) {
+      elements.inputSuspendStartDate.addEventListener('change', calculateDates);
+    }
 
     elements.btnSaveToSheet.addEventListener('click', handleSaveToSheet);
     elements.btnCopyResult.addEventListener('click', handleCopyResult);
