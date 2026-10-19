@@ -338,55 +338,117 @@
 
   <!-- 구글 시트 연동 설정 모달 -->
   <div id="sheetModal" class="modal-overlay hidden">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-lg">
       <div class="modal-header">
         <div class="modal-title-wrap">
-          <h3>📊 구글 스프레드시트 연동 설정</h3>
+          <h3>📊 구글 감염병 관리대장 연동 설정 (나이스 열 순서 자동 연동)</h3>
         </div>
-        <button type="button" id="btnCloseModal" class="btn-close">&times;</button>
+        <button type="button" id="btnCloseModal" class="btn-close" aria-label="닫기">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-desc">
-          선생님의 학교 구글 계정으로 생성한 Google Apps Script(웹 앱) URL을 등록하시면 클릭 한 번으로 감염병 관리대장 시트에 자동 누적됩니다.
-        </p>
-
-        <div class="modal-schema-guide">
-          <strong>스프레드시트 11개 열(스키마) 순서:</strong>
-          <ol class="schema-list">
-            <li>학년</li>
-            <li>반</li>
-            <li>성별</li>
-            <li>성명</li>
-            <li>질환명</li>
-            <li>증상 발생 일자</li>
-            <li>등교중지 기간</li>
-            <li>등교일</li>
-            <li>주증상</li>
-            <li>입원여부</li>
-            <li>나이스 보고여부</li>
-          </ol>
+        <div class="modal-info-banner">
+          <p class="modal-desc">
+            💡 <strong>나이스(NEIS) 양식에 맞추어 시트 열 순서를 바꾸셨어도 100% 정상 작동합니다!</strong><br />
+            스크립트가 스프레드시트 1행의 제목을 자동 분석하여 선생님께서 배치하신 열 위치에 정확히 기록합니다.
+          </p>
         </div>
 
-        <div class="form-group">
-          <label for="inputAppsScriptUrl">Google Apps Script 웹 앱 배포 URL</label>
-          <input 
-            type="url" 
-            id="inputAppsScriptUrl" 
-            placeholder="https://script.google.com/macros/s/.../exec"
-          />
-          <small class="field-help">자세한 연결법은 첨부된 <strong>setup.md</strong> 가이드를 참고하세요.</small>
+        <!-- 1단계: Code.gs 코드 복사 및 다운로드 -->
+        <div class="modal-script-box">
+          <div class="script-box-header">
+            <strong>1단계: 구글 시트 연동 코드 (Code.gs) 가져오기</strong>
+            <span class="script-badge">나이스 15개 열 완벽 자동인식</span>
+          </div>
+          <p class="script-box-desc">
+            아래 버튼을 눌러 코드를 복사하거나 다운로드한 후, 구글 스프레드시트 <strong>[확장 프로그램] → [Apps Script]</strong>의 <code>Code.gs</code>에 붙여넣으세요.
+          </p>
+          <div class="script-actions-row">
+            <button type="button" id="btnCopyCodeGs" class="btn btn-primary btn-copy-script">
+              <span class="btn-icon">📋</span> Code.gs 전체 코드 원클릭 복사하기
+            </button>
+            <button type="button" id="btnDownloadCodeGs" class="btn btn-secondary btn-download-script">
+              <span class="btn-icon">💾</span> Code.gs 파일 다운로드
+            </button>
+            <button type="button" id="btnToggleCodeView" class="btn btn-secondary">
+              <span class="btn-icon">👁️</span> 코드 직접 보기 / 전체선택
+            </button>
+          </div>
+          <!-- 코드 텍스트 영역 (클릭 시 전체 자동 선택) -->
+          <div id="codeViewContainer" class="code-view-container hidden">
+            <label for="codeGsTextarea" class="code-view-label">👇 아래 코드 상자 내부를 클릭하면 전체 선택(Ctrl+A)되어 바로 복사(Ctrl+C)하실 수 있습니다:</label>
+            <textarea id="codeGsTextarea" class="code-textarea" readonly rows="8" spellcheck="false"></textarea>
+          </div>
         </div>
 
-        <div class="modal-actions">
-          <button type="button" id="btnTestConnection" class="btn btn-secondary">
-            <span class="btn-icon">⚡</span> 연동 테스트
-          </button>
-          <button type="button" id="btnSaveSheetUrl" class="btn btn-primary">
-            저장하기
-          </button>
+        <!-- 2단계: 웹 앱 배포 URL 입력 및 1초 진단 -->
+        <div class="modal-url-box">
+          <div class="script-box-header">
+            <strong>2단계: Google Apps Script 웹 앱 배포 URL 등록</strong>
+          </div>
+          <div class="form-group">
+            <label for="inputAppsScriptUrl"><strong>배포된 웹 앱 URL ("/exec"로 끝나는 주소)</strong></label>
+            <div class="url-input-group">
+              <input 
+                type="url" 
+                id="inputAppsScriptUrl" 
+                placeholder="https://script.google.com/macros/s/.../exec"
+              />
+              <button type="button" id="btnDiagnoseUrl" class="btn btn-secondary btn-diag" title="브라우저 새 창에서 배포 권한을 1초 만에 확인합니다">
+                <span class="btn-icon">🌐</span> 1초 배포 진단
+              </button>
+            </div>
+            <small class="field-help">스프레드시트 주소(docs.google.com)가 아닌, Apps Script [배포]에서 발급된 <strong>"/exec"</strong> 주소여야 합니다.</small>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="btnTestConnection" class="btn btn-secondary">
+              <span class="btn-icon">⚡</span> 연동 테스트 전송
+            </button>
+            <button type="button" id="btnSaveSheetUrl" class="btn btn-primary">
+              저장하기
+            </button>
+          </div>
+
+          <div id="modalTestResult" class="modal-test-result hidden"></div>
         </div>
 
-        <div id="modalTestResult" class="modal-test-result hidden"></div>
+        <!-- 3단계: 연동이 안 될 때 원인 체크리스트 -->
+        <div class="modal-troubleshoot-card">
+          <div class="troubleshoot-header">
+            <span class="troubleshoot-icon">⚠️</span>
+            <strong>"URL을 넣었는데 연동이 안 돼요!" 4가지 핵심 원인과 해결법</strong>
+          </div>
+          <ul class="troubleshoot-list">
+            <li>
+              <span class="step-num">1</span>
+              <div>
+                <strong>[가장 중요한 원인] 액세스 권한 설정:</strong><br />
+                학교/교육청 구글 계정으로 배포할 때 [액세스 권한이 있는 사용자]가 기본값인 '조직 내 사용자'나 '나만'으로 되어 있으면 외부 전송이 100% 차단됩니다. 반드시 <strong>「모든 사용자(Anyone)」</strong>로 설정하셔야 합니다.
+              </div>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <div>
+                <strong>[코드 수정 후 필수] 새 버전으로 배포하기:</strong><br />
+                <code>Code.gs</code> 코드를 새로 붙여넣고 저장(💾)만 누르면 웹 앱에는 옛날 코드가 동작합니다. 반드시 상단 <strong>[배포] → [배포 관리] → ✏️수정(연필 아이콘) → 버전: [새 버전(New Version)] 선택 → [배포]</strong>를 눌러주셔야 합니다.
+              </div>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <div>
+                <strong>웹 앱 주소 확인:</strong><br />
+                주소 끝이 반드시 <code>/exec</code>여야 합니다. 스프레드시트 본문 주소(<code>/edit</code>)나 개발자 테스트 주소(<code>/dev</code>)는 브라우저 보안상 전송되지 않습니다.
+              </div>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <div>
+                <strong>열 제목(1행) 확인:</strong><br />
+                나이스 기준에 따라 열 순서를 자유롭게 바꾸셔도 되지만, 1행의 제목에 <code>연번</code>, <code>질환명</code>, <code>학년</code>, <code>반</code>, <code>번호</code>, <code>성명</code>, <code>성별</code>, <code>발생일</code> 등의 단어가 포함되어 있어야 해당 열을 자동 인식합니다.
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

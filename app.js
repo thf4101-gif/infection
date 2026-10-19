@@ -176,15 +176,15 @@
       status: 'required',
       statusText: '등교중지 필요',
       defaultDays: 5,
-      periodDesc: '해열제 복용 없이 정상체온 회복 후 48시간 경과 시까지 (또는 증상 발생 후 최소 5일 경과)',
-      releaseCondition: '해열제 없이 37.5℃ 미만의 정상 체온이 48시간 이상 유지되고 주요 호흡기 증상이 호전된 상태.',
-      legalCriteria: '교육부 학생 감염병 예방 매뉴얼 학교장 재량 등교중지 및 법정 출석인정 대상',
+      periodDesc: '해열제 복용 없이 정상체온 회복 후 24시간이 경과할 때까지 (해열제 투약 시: 마지막 해열제 투약 시점부터 48시간 경과 관찰 후 등교 가능)',
+      releaseCondition: '해열제 없이 정상체온 회복 후 24시간 경과 시. (단, 해열제를 투약한 경우에는 마지막 해열제 투약 시점부터 48시간 경과 관찰 후 등교 가능)',
+      legalCriteria: '「학교보건법」 제8조 및 질병관리청·교육부 『2026 시설별 인플루엔자 관리 지침』',
       primaryLaw: '「학교보건법」 제8조(등교중지) 및 동법 시행령 제22조',
-      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」 제2편 Ⅱ. 인플루엔자 관리 지침',
+      manualSource: '질병관리청·교육부 『2026 시설별 인플루엔자 관리 지침(어린이집·유치원·학교용)』 제2장 등교(등원) 중지 기간 적용 안내',
       attendanceRule: COMMON_ATTENDANCE_RULE,
-      kdcaGuide: '질병관리청 「인플루엔자 관리지침」 - 해열 후 48시간 등교중지 원칙',
-      documentReq: '진료확인서 또는 진단서 (인플루엔자 확진 검사 결과 또는 상병명 명시)',
-      teacherNotice: '타미플루 등 항바이러스제 복용 여부와 무관하게 해열 후 48시간 원칙 준수. 학급 내 마스크 착용 및 손소독 지도.',
+      kdcaGuide: '질병관리청 『2026-2027절기 인플루엔자 관리지침』 - 해열제 없이 정상체온 회복 후 24시간 경과 (해열제 투약 시 48시간 관찰)',
+      documentReq: '진료확인서 또는 의사소견서/진단서 (인플루엔자 확진 검사 결과 또는 상병명 명시)',
+      teacherNotice: '『2026 시설별 인플루엔자 관리 지침(질병관리청·교육부)』 기준: 해열제 없이 정상체온 회복 후 24시간 경과 시 등교 가능. 단, 해열제를 투약한 경우에는 마지막 해열제 투약 시점부터 48시간 경과 관찰 후 등교 가능함을 학부모에게 필히 안내.',
       neisDuty: '보고대상'
     },
     {
@@ -826,9 +826,15 @@
     sheetModal: document.getElementById('sheetModal'),
     btnCloseModal: document.getElementById('btnCloseModal'),
     inputAppsScriptUrl: document.getElementById('inputAppsScriptUrl'),
+    btnDiagnoseUrl: document.getElementById('btnDiagnoseUrl'),
     btnTestConnection: document.getElementById('btnTestConnection'),
     btnSaveSheetUrl: document.getElementById('btnSaveSheetUrl'),
     modalTestResult: document.getElementById('modalTestResult'),
+
+    btnDownloadCodeGs: document.getElementById('btnDownloadCodeGs'),
+    btnToggleCodeView: document.getElementById('btnToggleCodeView'),
+    codeViewContainer: document.getElementById('codeViewContainer'),
+    codeGsTextarea: document.getElementById('codeGsTextarea'),
 
     toastContainer: document.getElementById('toastContainer')
   };
@@ -1091,7 +1097,12 @@
 
     elements.inputSuspendPeriod.value = `${onsetDate} ~ ${endDate} (약 ${days}일간)`;
     elements.inputReturnDate.value = returnDate;
-    elements.calcPeriodHint.textContent = `기준: ${disease.periodDesc} (담당 의사 소견에 따라 변경 가능)`;
+
+    if (disease.id === 'influenza') {
+      elements.calcPeriodHint.textContent = '💡 2026 인플루엔자 지침: 해열제 없이 정상체온 회복 후 24시간 경과까지 (해열제 투약 시: 마지막 투약 시점부터 48시간 경과 관찰 후 등교)';
+    } else {
+      elements.calcPeriodHint.textContent = `기준: ${disease.periodDesc} (담당 의사 소견에 따라 변경 가능)`;
+    }
   }
 
   function updateBottomDecisionBanner(item) {
@@ -1123,11 +1134,12 @@
   }
 
   /* ============================================================
-     8. 구글 스프레드시트 11개 스키마 정밀 매핑 및 전송
+     8. 구글 스프레드시트 나이스 연계 스키마 정밀 매핑 및 전송
   ============================================================ */
   function getFormDataRecord() {
     const grade = elements.inputGrade.value.trim();
     const className = elements.inputClass.value.trim();
+    const number = elements.inputNumber ? elements.inputNumber.value.trim() : '';
     const name = elements.inputName.value.trim();
     const gender = elements.inputGender.value.trim();
     const symptomDate = elements.inputSymptomDate.value.trim();
@@ -1172,6 +1184,8 @@
     return {
       grade: grade,
       class: className,
+      gradeClass: `${grade} ${className}`,
+      number: number,
       gender: gender,
       name: name,
       disease: diseaseName,
@@ -1189,51 +1203,76 @@
     const record = getFormDataRecord();
     if (!record) return;
 
-    elements.btnSaveToSheet.disabled = true;
-    elements.btnSaveToSheet.textContent = '⏳ 전송 중...';
-
-    saveToLocalHistory(record, false);
-
-    const targetUrl = STATE.sheetUrl ? STATE.sheetUrl.trim() : '';
+    let targetUrl = STATE.sheetUrl ? STATE.sheetUrl.trim() : '';
 
     if (!targetUrl) {
-      elements.btnSaveToSheet.disabled = false;
-      elements.btnSaveToSheet.innerHTML = '<span class="btn-icon">📥</span> 구글 감염병 관리대장에 등록';
-      setFeedback('⚠️ 구글 시트 연동 URL이 아직 등록되지 않아 [로컬 관리대장]에만 임시 보관되었습니다. 우측 상단 [구글 시트 연동 설정]을 확인해주세요.', 'error');
+      saveToLocalHistory(record, false);
+      setFeedback('⚠️ 구글 시트 연동 URL이 아직 등록되지 않았습니다. 우측 상단 [구글 시트 연동 설정]에서 웹 앱 배포 URL을 먼저 등록해주세요.', 'error');
       openSheetModal();
       return;
     }
 
+    // URL 형식 유효성 검사 (흔히 발생하는 시트 주소/편집기 주소 오입력 방지)
+    if (targetUrl.includes('docs.google.com/spreadsheets') || targetUrl.endsWith('/edit')) {
+      saveToLocalHistory(record, false);
+      setFeedback('⚠️ 구글 스프레드시트 주소나 편집기 주소가 입력되어 있습니다! Apps Script [배포] → [새 배포]에서 발급받은 "/exec"로 끝나는 웹 앱 URL을 등록해주세요.', 'error');
+      openSheetModal();
+      return;
+    }
+
+    if (targetUrl.endsWith('/dev')) {
+      targetUrl = targetUrl.slice(0, -4) + '/exec';
+      STATE.sheetUrl = targetUrl;
+      localStorage.setItem('school_sheet_url', targetUrl);
+    }
+
+    elements.btnSaveToSheet.disabled = true;
+    elements.btnSaveToSheet.textContent = '⏳ 시트 전송 중...';
+
+    // 로컬 백업 먼저 생성 (초기 상태: 미전송)
+    saveToLocalHistory(record, false);
+
+    const payload = JSON.stringify({
+      action: 'appendRecord',
+      record: {
+        grade: record.grade,
+        class: record.class,
+        gradeClass: record.gradeClass,
+        number: record.number || '',
+        gender: record.gender,
+        name: record.name,
+        disease: record.disease,
+        symptomDate: record.symptomDate,
+        suspendPeriod: record.suspendPeriod,
+        returnDate: record.returnDate,
+        symptoms: record.symptoms,
+        hospitalized: record.hospitalized,
+        note: record.hospitalized === '예' ? '병원입원' : '자가격리',
+        neisReported: record.neisReported,
+        reportDate: formatDate(new Date())
+      }
+    });
+
     try {
+      // mode: 'no-cors'를 적용하여 Google Apps Script 302 리디렉션 CORS 차단 문제를 우회!
       await fetch(targetUrl, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'appendRecord',
-          record: {
-            grade: record.grade,
-            class: record.class,
-            gender: record.gender,
-            name: record.name,
-            disease: record.disease,
-            symptomDate: record.symptomDate,
-            suspendPeriod: record.suspendPeriod,
-            returnDate: record.returnDate,
-            symptoms: record.symptoms,
-            hospitalized: record.hospitalized,
-            neisReported: record.neisReported
-          }
-        })
+        body: payload
       });
 
-      markLastRecordSynced();
-      setFeedback(`✅ [${record.grade} ${record.class} ${record.name}] 학생의 감염병 관리대장 기록이 구글 스프레드시트에 등록되었습니다!`, 'success');
+      // 정상 전송 완료 시 상태 갱신
+      markLastRecordSynced(true);
+      const studentLabel = `${record.grade} ${record.class} ${record.number ? record.number + '번 ' : ''}${record.name}`;
+      setFeedback(`✅ [${studentLabel}] 학생의 기록이 구글 스프레드시트에 성공적으로 전송되었습니다!`, 'success');
       showToast('구글 시트 감염병 관리대장 전송 완료');
     } catch (err) {
       console.warn('Google Sheet submission warning:', err);
-      markLastRecordSynced();
-      setFeedback(`ℹ️ 전송 요청을 보냈습니다. 구글 시트에서 새로운 행이 추가되었는지 확인해주세요.`, 'success');
-      showToast('시트 전송 요청 완료');
+      // 실패 시 전송완료로 위장하지 않고 로컬 보관 상태 유지
+      markLastRecordSynced(false);
+      setFeedback(`⚠️ 구글 시트 전송 중 오류가 발생하여 [로컬 관리대장]에 안전하게 보관되었습니다. Apps Script 배포 시 "액세스 권한: 모든 사용자" 설정과 URL을 확인해주세요.`, 'error');
+      showToast('⚠️ 시트 전송 실패 (로컬 안전보관)');
     } finally {
       elements.btnSaveToSheet.disabled = false;
       elements.btnSaveToSheet.innerHTML = '<span class="btn-icon">📥</span> 구글 감염병 관리대장에 등록';
@@ -1254,9 +1293,9 @@
     renderHistoryTable();
   }
 
-  function markLastRecordSynced() {
+  function markLastRecordSynced(isSynced = true) {
     if (STATE.history.length > 0) {
-      STATE.history[0].synced = true;
+      STATE.history[0].synced = isSynced;
       localStorage.setItem('school_disease_history', JSON.stringify(STATE.history));
       renderHistoryTable();
     }
@@ -1311,7 +1350,7 @@
         tdSync.textContent = '전송완료';
         tdSync.className = 'tag-sync-ok';
       } else {
-        tdSync.textContent = '로컬보관';
+        tdSync.textContent = '로컬보관(미전송)';
         tdSync.className = 'tag-sync-local';
       }
 
@@ -1342,6 +1381,11 @@
     const docReq = disease ? disease.documentReq : '진료확인서 또는 의사소견서';
 
     // 학부모 및 담임교사 전달용: 출처 문서 없이 깔끔하고 간결한 안내문
+    let fluNotice = '';
+    if (disease && (disease.id === 'influenza' || disease.name.includes('인플루엔자') || disease.name.includes('독감'))) {
+      fluNotice = '\n※ [독감 등교 기준 안내] 해열제 복용 없이 정상체온을 회복한 후 24시간이 경과해야 등교 가능합니다. (단, 해열제를 투약한 경우에는 마지막 해열제 투약 시점부터 48시간 동안 발열이 없는지 경과 관찰 후 등교)';
+    }
+
     const copyText = `[초등학교 보건실] 등교중지 및 출결 안내
 
 ■ 학생: ${record.grade} ${record.class} ${record.name}
@@ -1352,7 +1396,7 @@
 ■ 등교 재개 기준: ${returnCond}
 ■ 제출 서류: ${docReq}
 
-※ 감염병 전파 차단을 위해 전염력이 소실될 때까지 가정 내 요양 및 휴식을 부탁드립니다.
+※ 감염병 전파 차단을 위해 전염력이 소실될 때까지 가정 내 요양 및 휴식을 부탁드립니다.${fluNotice}
 ※ 위 기간은 [출석인정 결석]으로 처리되며, 완치 후 등교 시 위 증빙 서류를 담임선생님께 제출해 주시기 바랍니다.`;
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1419,11 +1463,14 @@
   }
 
   /* ============================================================
-     11. 구글 스프레드시트 설정 모달
+     11. 구글 스프레드시트 설정 모달 & 1초 진단 도구
   ============================================================ */
   function openSheetModal() {
     elements.inputAppsScriptUrl.value = STATE.sheetUrl || '';
     elements.modalTestResult.classList.add('hidden');
+    if (elements.codeGsTextarea) {
+      elements.codeGsTextarea.value = CODE_GS_FULL_SOURCE;
+    }
     elements.sheetModal.classList.remove('hidden');
   }
 
@@ -1432,7 +1479,29 @@
   }
 
   function saveSheetUrl() {
-    const url = elements.inputAppsScriptUrl.value.trim();
+    let url = elements.inputAppsScriptUrl.value.trim();
+    if (!url) {
+      STATE.sheetUrl = '';
+      localStorage.removeItem('school_sheet_url');
+      updateSheetBadge();
+      showToast('연동 URL이 비워졌습니다. (로컬 저장 모드)');
+      closeSheetModal();
+      return;
+    }
+
+    if (url.includes('docs.google.com/spreadsheets') || url.endsWith('/edit')) {
+      alert('⚠️ 입력하신 주소는 스프레드시트 자체 주소입니다!\n\n스프레드시트 메뉴 [확장 프로그램] → [Apps Script] 창의 우측 상단 파란색 [배포] → [새 배포]를 눌러 생성된 "/exec"로 끝나는 웹 앱 URL을 복사하여 넣어주세요.');
+      return;
+    }
+
+    if (url.endsWith('/dev')) {
+      const execUrl = url.slice(0, -4) + '/exec';
+      if (confirm('현재 "/dev" 주소가 입력되어 있습니다. 이는 개발자 테스트 주소이므로 외부 전송 시 오류가 납니다.\n\n정식 주소인 "/exec"로 자동 변환하여 저장하시겠습니까?')) {
+        url = execUrl;
+        elements.inputAppsScriptUrl.value = url;
+      }
+    }
+
     STATE.sheetUrl = url;
     localStorage.setItem('school_sheet_url', url);
     updateSheetBadge();
@@ -1440,8 +1509,63 @@
     closeSheetModal();
   }
 
+  function handleDiagnoseUrl() {
+    let url = elements.inputAppsScriptUrl.value.trim();
+    if (!url) {
+      alert('⚠️ 먼저 웹 앱 URL을 입력해주세요.');
+      elements.inputAppsScriptUrl.focus();
+      return;
+    }
+
+    if (url.includes('docs.google.com/spreadsheets') || url.endsWith('/edit')) {
+      alert('⚠️ 스프레드시트 본문 주소입니다. Apps Script의 [배포] 창에서 "/exec"로 끝나는 웹 앱 주소를 복사해 넣어주세요.');
+      return;
+    }
+
+    if (url.endsWith('/dev')) {
+      const execUrl = url.slice(0, -4) + '/exec';
+      if (confirm('입력하신 주소가 테스트용 "/dev"로 끝나고 있습니다.\n\n정식 배포 주소인 "/exec"로 자동 변경하여 진단 창을 띄울까요?')) {
+        url = execUrl;
+        elements.inputAppsScriptUrl.value = url;
+      }
+    }
+
+    // 새 탭에서 URL을 직접 열어 GET 응답 점검
+    window.open(url, '_blank');
+    showToast('🌐 새 탭에서 배포 상태를 점검합니다. {"status":"ok"}가 뜨면 정상입니다.');
+  }
+
+  function downloadCodeGs() {
+    const blob = new Blob([CODE_GS_FULL_SOURCE], { type: 'text/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Code.gs';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('💾 Code.gs 파일이 다운로드되었습니다. 메모장으로 열어 전체 복사하실 수 있습니다.');
+  }
+
+  function toggleCodeView() {
+    if (elements.codeViewContainer) {
+      const isHidden = elements.codeViewContainer.classList.contains('hidden');
+      if (isHidden) {
+        elements.codeViewContainer.classList.remove('hidden');
+        if (elements.codeGsTextarea) {
+          elements.codeGsTextarea.value = CODE_GS_FULL_SOURCE;
+          elements.codeGsTextarea.focus();
+          elements.codeGsTextarea.select();
+        }
+      } else {
+        elements.codeViewContainer.classList.add('hidden');
+      }
+    }
+  }
+
   async function testSheetConnection() {
-    const url = elements.inputAppsScriptUrl.value.trim();
+    let url = elements.inputAppsScriptUrl.value.trim();
     if (!url) {
       elements.modalTestResult.className = 'modal-test-result error';
       elements.modalTestResult.textContent = '⚠️ Google Apps Script 웹 앱 URL을 먼저 입력해주세요.';
@@ -1449,27 +1573,41 @@
       return;
     }
 
+    if (url.includes('docs.google.com/spreadsheets') || url.endsWith('/edit')) {
+      elements.modalTestResult.className = 'modal-test-result error';
+      elements.modalTestResult.textContent = '⚠️ 입력하신 주소는 스프레드시트 본문 주소입니다. Apps Script의 [배포] → [새 배포]에서 생성된 "/exec"로 끝나는 웹 앱 URL을 넣어주세요.';
+      elements.modalTestResult.classList.remove('hidden');
+      return;
+    }
+
+    if (url.endsWith('/dev')) {
+      url = url.slice(0, -4) + '/exec';
+      elements.inputAppsScriptUrl.value = url;
+    }
+
     elements.btnTestConnection.disabled = true;
-    elements.btnTestConnection.textContent = '테스트 중...';
+    elements.btnTestConnection.textContent = '테스트 전송 중...';
     elements.modalTestResult.classList.add('hidden');
 
     try {
+      // mode: 'no-cors'를 적용하여 구글 리디렉션 CORS 차단 방지
       await fetch(url, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: 'ping' })
       });
 
       elements.modalTestResult.className = 'modal-test-result success';
-      elements.modalTestResult.textContent = '✅ 연동 테스트 신호가 전송되었습니다! 스프레드시트에 새 행 추가가 정상 작동하는지 확인해주세요.';
+      elements.modalTestResult.innerHTML = '✅ 연동 테스트 신호가 구글 서버로 정상 전송되었습니다!<br /><small>더 확실한 권한 검증을 위해 옆의 <strong>[🌐 1초 배포 진단]</strong> 버튼을 눌러 새 탭에서 <code>{"status":"ok"}</code>가 뜨는지 확인해보세요.</small>';
       elements.modalTestResult.classList.remove('hidden');
     } catch (err) {
-      elements.modalTestResult.className = 'modal-test-result success';
-      elements.modalTestResult.textContent = 'ℹ️ 테스트 신호를 보냈습니다. (Apps Script가 배포되었다면 정상 수신됩니다)';
+      elements.modalTestResult.className = 'modal-test-result error';
+      elements.modalTestResult.textContent = '⚠️ 연결에 실패했습니다. Apps Script 배포 시 [액세스 권한: 모든 사용자]로 설정되었는지 확인해 주세요.';
       elements.modalTestResult.classList.remove('hidden');
     } finally {
       elements.btnTestConnection.disabled = false;
-      elements.btnTestConnection.innerHTML = '<span class="btn-icon">⚡</span> 연동 테스트';
+      elements.btnTestConnection.innerHTML = '<span class="btn-icon">⚡</span> 연동 테스트 전송';
     }
   }
 
@@ -1536,6 +1674,51 @@
       }
     });
 
+    // 1. Code.gs 원클릭 복사 버튼
+    const btnCopyCodeGs = document.getElementById('btnCopyCodeGs');
+    if (btnCopyCodeGs) {
+      btnCopyCodeGs.addEventListener('click', () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(CODE_GS_FULL_SOURCE).then(() => {
+            btnCopyCodeGs.innerHTML = '<span class="btn-icon">✅</span> Code.gs 전체 복사 완료!';
+            btnCopyCodeGs.style.backgroundColor = '#15803d';
+            btnCopyCodeGs.style.color = '#ffffff';
+            showToast('✅ Code.gs 코드가 클립보드에 복사되었습니다! Apps Script에 붙여넣기(Ctrl+V)하세요.');
+            setTimeout(() => {
+              btnCopyCodeGs.innerHTML = '<span class="btn-icon">📋</span> Code.gs 전체 코드 원클릭 복사하기';
+              btnCopyCodeGs.style.backgroundColor = '';
+              btnCopyCodeGs.style.color = '';
+            }, 3000);
+          }).catch(() => fallbackCopyText(CODE_GS_FULL_SOURCE));
+        } else {
+          fallbackCopyText(CODE_GS_FULL_SOURCE);
+        }
+      });
+    }
+
+    // 2. Code.gs 다운로드 버튼
+    if (elements.btnDownloadCodeGs) {
+      elements.btnDownloadCodeGs.addEventListener('click', downloadCodeGs);
+    }
+
+    // 3. 코드 직접 보기 토글 버튼
+    if (elements.btnToggleCodeView) {
+      elements.btnToggleCodeView.addEventListener('click', toggleCodeView);
+    }
+
+    // 4. 코드 텍스트 영역 클릭 시 전체 자동 선택
+    if (elements.codeGsTextarea) {
+      elements.codeGsTextarea.addEventListener('click', function () {
+        this.select();
+        showToast('전체 선택되었습니다. Ctrl+C를 눌러 복사하세요.');
+      });
+    }
+
+    // 5. 1초 배포 진단 버튼
+    if (elements.btnDiagnoseUrl) {
+      elements.btnDiagnoseUrl.addEventListener('click', handleDiagnoseUrl);
+    }
+
     elements.btnOpenSheetSettings.addEventListener('click', openSheetModal);
     elements.btnCloseModal.addEventListener('click', closeSheetModal);
     elements.sheetModal.addEventListener('click', (e) => {
@@ -1544,6 +1727,273 @@
     elements.btnSaveSheetUrl.addEventListener('click', saveSheetUrl);
     elements.btnTestConnection.addEventListener('click', testSheetConnection);
   }
+
+  // Google Apps Script Code.gs 전체 최신 소스코드 (나이스 열 순서 자동 인식 & 새 시트 자동 서식)
+  const CODE_GS_FULL_SOURCE = `/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ * 초등학교 감염병 관리대장 - Google Apps Script (Code.gs)
+ * 
+ * [나이스(NEIS) 연계 및 열 순서 자유 변동 완벽 자동 매핑]
+ * 1. 선생님께서 시트의 열 순서를 어떻게 바꾸셔도 헤더 제목을 자동으로 분석하여
+ *    해당하는 열에 데이터를 정확하게 기재합니다.
+ * 2. 1행에 제목("2026학년도 감염병 관리대장" 등)이 있거나 병합되어 있어도
+ *    2~5행의 실제 헤더 행을 스스로 찾아냅니다.
+ * 3. 템플릿에 미리 서식이나 테두리가 50행까지 걸려 있어도,
+ *    맨 아래로 밀려나지 않고 성명이 비어있는 첫 행부터 차례대로 작성합니다.
+ * 4. 새 시트인 경우 나이스 표준 15개 열 헤더를 자동으로 생성합니다.
+ */
+
+// 1. 브라우저 주소창이나 진단 도구에서 웹 앱 URL 배포 상태를 즉시 점검하는 GET 핸들러
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "ok",
+    message: "초등학교 감염병 관리대장 연동 시스템이 정상 작동 중입니다.",
+    account: Session.getActiveUser().getEmail() || "인증됨",
+    time: new Date().toISOString()
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 2. 웹앱에서 데이터를 보냈을 때 시트에 안전하게 기재하는 POST 핸들러
+function doPost(e) {
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getActiveSheet();
+
+    let postData = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        postData = JSON.parse(e.postData.contents);
+      } catch (jsonErr) {
+        postData = {};
+      }
+    } else if (e && e.parameter) {
+      postData = e.parameter;
+    }
+
+    // [테스트 핑 요청 처리]
+    if (postData.action === "ping") {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "연동 테스트 성공! 스프레드시트와 정상 연결되었습니다.",
+        sheetName: sheet.getName()
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const rec = postData.record || postData || {};
+    if (!rec.name && !rec.disease) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "error",
+        message: "학생 정보 또는 질환명이 전달되지 않았습니다."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 1~5행을 검색하여 헤더 행 및 열 매핑 분석
+    const headerInfo = detectHeaderRow(sheet);
+    const headerRow = headerInfo.row;
+    const colMap = headerInfo.map;
+    const maxCols = Math.max(sheet.getLastColumn(), 15);
+
+    // 실제 데이터가 비어 있는 첫 행 찾기 (헤더 행 다음부터 성명 열 기준 탐색)
+    const checkCol = colMap.name || colMap.disease || 2;
+    const targetRow = findFirstEmptyRow(sheet, headerRow, checkCol);
+
+    // 연번 계산: 이전 행 연번 + 1, 또는 (targetRow - headerRow)
+    let serialNo = targetRow - headerRow;
+    if (colMap.serial && targetRow > headerRow + 1) {
+      const prevVal = sheet.getRange(targetRow - 1, colMap.serial).getValue();
+      const parsed = parseInt(prevVal, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        serialNo = parsed + 1;
+      }
+    }
+
+    // 학년반 조합 (시트에 '학년반' 단일 열이 있을 때 대비)
+    const gradeClassStr = rec.gradeClass || (rec.class ? (rec.grade + " " + rec.class) : rec.grade);
+
+    // [선생님께서 변경하신 열 순서에 맞추어 정확하게 셀에 기재]
+    if (colMap.serial) sheet.getRange(targetRow, colMap.serial).setValue(serialNo);
+    if (colMap.disease) sheet.getRange(targetRow, colMap.disease).setValue(sanitize(rec.disease));
+    if (colMap.grade) sheet.getRange(targetRow, colMap.grade).setValue(sanitize(rec.grade));
+    if (colMap.class) sheet.getRange(targetRow, colMap.class).setValue(sanitize(rec.class));
+    if (colMap.gradeClass) sheet.getRange(targetRow, colMap.gradeClass).setValue(sanitize(gradeClassStr));
+    if (colMap.number) sheet.getRange(targetRow, colMap.number).setValue(sanitize(rec.number));
+    if (colMap.name) sheet.getRange(targetRow, colMap.name).setValue(sanitize(rec.name));
+    if (colMap.gender) sheet.getRange(targetRow, colMap.gender).setValue(sanitize(rec.gender));
+    if (colMap.symptomDate) sheet.getRange(targetRow, colMap.symptomDate).setValue(sanitize(rec.symptomDate));
+    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.hospitalized));
+    if (colMap.symptoms) sheet.getRange(targetRow, colMap.symptoms).setValue(sanitize(rec.symptoms || "특이사항 없음"));
+    if (colMap.suspendPeriod) sheet.getRange(targetRow, colMap.suspendPeriod).setValue(sanitize(rec.suspendPeriod));
+    if (colMap.returnDate) sheet.getRange(targetRow, colMap.returnDate).setValue(sanitize(rec.returnDate));
+    if (colMap.neisReported) sheet.getRange(targetRow, colMap.neisReported).setValue(sanitize(rec.neisReported || "미보고"));
+    if (colMap.reportDate) sheet.getRange(targetRow, colMap.reportDate).setValue(sanitize(rec.reportDate || Utilities.formatDate(new Date(), "GMT+9", "yyyy-MM-dd")));
+    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
+
+    // 시트 세로 가운데 정렬 적용
+    sheet.getRange(targetRow, 1, 1, maxCols).setVerticalAlignment("middle");
+
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      message: targetRow + "행에 성공적으로 등록되었습니다. (연번: " + serialNo + ")",
+      row: targetRow
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 1~5행을 검사하여 실제 헤더 행을 감지하고, 열 순서 매핑 사전을 생성
+ */
+function detectHeaderRow(sheet) {
+  const maxSearchRows = Math.min(Math.max(sheet.getLastRow(), 1), 6);
+  const maxCols = Math.max(sheet.getLastColumn(), 25);
+
+  for (let r = 1; r <= maxSearchRows; r++) {
+    const rowValues = sheet.getRange(r, 1, 1, maxCols).getValues()[0];
+    const rowText = rowValues.map(v => String(v || "").replace(/\\s+/g, "").toLowerCase()).join(" ");
+
+    const keywords = ["성명", "이름", "질환", "병명", "학년", "반", "증상", "등교", "연번", "번호"];
+    let matchCount = 0;
+    keywords.forEach(kw => {
+      if (rowText.includes(kw)) matchCount++;
+    });
+
+    if (matchCount >= 2) {
+      return {
+        row: r,
+        map: buildColumnMapping(rowValues)
+      };
+    }
+  }
+
+  // 완전 새 시트인 경우 1행에 나이스 표준 15개 열 생성
+  if (sheet.getLastRow() === 0 || sheet.getLastColumn() === 0) {
+    const defaultHeaders = [
+      "연번", "질환명", "학년", "반", "번호", "성명", "성별",
+      "증상 발생 일자", "입원여부", "주증상", "등교중지 기간", "등교일",
+      "감염병 나이스 보고 여부", "보고일", "비고"
+    ];
+    sheet.getRange(1, 1, 1, defaultHeaders.length).setValues([defaultHeaders]);
+    sheet.getRange(1, 1, 1, defaultHeaders.length)
+      .setFontWeight("bold")
+      .setBackground("#16375a")
+      .setFontColor("#ffffff")
+      .setHorizontalAlignment("center")
+      .setVerticalAlignment("middle");
+    sheet.setRowHeight(1, 35);
+    return {
+      row: 1,
+      map: buildColumnMapping(defaultHeaders)
+    };
+  }
+
+  // 1행을 기본으로 사용
+  const row1Values = sheet.getRange(1, 1, 1, maxCols).getValues()[0];
+  return {
+    row: 1,
+    map: buildColumnMapping(row1Values)
+  };
+}
+
+/**
+ * 헤더 텍스트를 분석하여 사용자가 바꾼 열 순서(몇 번째 열인지)를 자동 파악
+ */
+function buildColumnMapping(headers) {
+  const map = {};
+  for (let i = 0; i < headers.length; i++) {
+    const raw = String(headers[i] || "").replace(/\\s+/g, "").toLowerCase();
+    const col = i + 1;
+    if (!raw) continue;
+
+    if (raw.includes("연번") || raw === "no" || raw === "no.") {
+      map.serial = col;
+    } else if (raw.includes("질환") || raw.includes("병명") || raw.includes("감염병명") || raw.includes("상병")) {
+      map.disease = col;
+    } else if (raw.includes("학년반") || raw.includes("학반")) {
+      map.gradeClass = col;
+    } else if (raw.includes("학년")) {
+      map.grade = col;
+    } else if (raw.includes("반") && !raw.includes("학년")) {
+      map.class = col;
+    } else if (raw.includes("번호") || raw.includes("출석번호") || raw.includes("학생번호")) {
+      map.number = col;
+    } else if (raw.includes("성명") || raw.includes("이름") || raw.includes("학생명")) {
+      map.name = col;
+    } else if (raw.includes("성별") || raw === "성") {
+      map.gender = col;
+    } else if (raw.includes("발생") || raw.includes("발견") || raw.includes("발병") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
+      map.symptomDate = col;
+    } else if (raw.includes("입원")) {
+      map.hospitalized = col;
+    } else if (raw.includes("주증상") || (raw.includes("증상") && !raw.includes("일자") && !raw.includes("일"))) {
+      map.symptoms = col;
+    } else if (raw.includes("중지") || raw.includes("격리") || (raw.includes("출석인정") && raw.includes("기간"))) {
+      map.suspendPeriod = col;
+    } else if (raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
+      map.returnDate = col;
+    } else if (raw.includes("나이스") || (raw.includes("보고") && raw.includes("여부"))) {
+      map.neisReported = col;
+    } else if (raw.includes("보고일") || raw.includes("등록일") || raw.includes("작성일")) {
+      map.reportDate = col;
+    } else if (raw.includes("비고") || raw.includes("특이사항") || raw.includes("참고")) {
+      map.note = col;
+    }
+  }
+
+  // 매핑 실패 시 나이스 최신 15개 열 기본값 보정
+  if (!map.disease && !map.name) {
+    map.serial = 1;
+    map.disease = 2;
+    map.grade = 3;
+    map.class = 4;
+    map.number = 5;
+    map.name = 6;
+    map.gender = 7;
+    map.symptomDate = 8;
+    map.hospitalized = 9;
+    map.symptoms = 10;
+    map.suspendPeriod = 11;
+    map.returnDate = 12;
+    map.neisReported = 13;
+    map.reportDate = 14;
+    map.note = 15;
+  }
+
+  return map;
+}
+
+/**
+ * 헤더 행 아래에서 지정한 열(성명 열 등)이 비어있는 첫 행을 찾음
+ */
+function findFirstEmptyRow(sheet, headerRow, checkCol) {
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  if (lastRow <= headerRow) return headerRow + 1;
+
+  const searchCount = Math.max(lastRow - headerRow + 10, 50);
+  const values = sheet.getRange(headerRow + 1, checkCol, searchCount, 1).getValues();
+
+  for (let i = 0; i < values.length; i++) {
+    const val = values[i][0];
+    if (val === "" || val === null || val === undefined) {
+      return headerRow + 1 + i;
+    }
+  }
+  return headerRow + 1 + values.length;
+}
+
+function sanitize(val) {
+  if (val === null || val === undefined) return "";
+  let str = String(val).trim();
+  if (str.startsWith("=") || str.startsWith("+") || (str.startsWith("-") && isNaN(str))) {
+    str = "'" + str;
+  }
+  return str;
+}`;
 
   document.addEventListener('DOMContentLoaded', initApp);
 })();

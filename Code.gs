@@ -3,52 +3,32 @@
  * SPDX-License-Identifier: Apache-2.0
  * 초등학교 감염병 관리대장 - Google Apps Script (Code.gs)
  * 
- * [목적]
- * '등교중지 필요한 질병 찾기' 웹앱에서 전송된 학생 감염병 정보를
- * 구글 스프레드시트의 11개 표준 열(스키마)에 안전하게 누적 기록합니다.
- * 
- * [스프레드시트 11개 열 스키마]
- * 1. 학년 | 2. 반 | 3. 성별 | 4. 성명 | 5. 질환명 | 6. 증상 발생 일자 |
- * 7. 등교중지 기간 | 8. 등교일 | 9. 주증상 | 10. 입원여부 | 11. 나이스 보고여부
+ * [나이스(NEIS) 연계 및 열 순서 자유 변동 완벽 자동 매핑]
+ * 1. 선생님께서 시트의 열 순서를 어떻게 바꾸셔도 헤더 제목을 자동으로 분석하여
+ *    해당하는 열에 데이터를 정확하게 기재합니다.
+ * 2. 1행에 제목("2026학년도 감염병 관리대장" 등)이 있거나 병합되어 있어도
+ *    2~5행의 실제 헤더 행을 스스로 찾아냅니다.
+ * 3. 템플릿에 미리 서식이나 테두리가 50행까지 걸려 있어도,
+ *    맨 아래로 밀려나지 않고 성명이 비어있는 첫 행부터 차례대로 작성합니다.
+ * 4. 새 시트인 경우 나이스 표준 15개 열 헤더를 자동으로 생성합니다.
  */
 
-// 1. 표준 헤더(11개 열) 정의
-const EXPECTED_HEADERS = [
-  "학년",
-  "반",
-  "성별",
-  "성명",
-  "질환명",
-  "증상 발생 일자",
-  "등교중지 기간",
-  "등교일",
-  "주증상",
-  "입원여부",
-  "나이스 보고여부"
-];
-
-/**
- * 웹앱 연결 상태 확인용 GET 요청 핸들러
- */
+// 1. 브라우저 주소창이나 진단 도구에서 웹 앱 URL 배포 상태를 즉시 점검하는 GET 핸들러
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     status: "ok",
-    message: "초등학교 감염병 관리대장 Apps Script가 정상 실행 중입니다.",
-    schema: EXPECTED_HEADERS
+    message: "초등학교 감염병 관리대장 연동 시스템이 정상 작동 중입니다.",
+    account: Session.getActiveUser().getEmail() || "인증됨",
+    time: new Date().toISOString()
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
-/**
- * 웹앱에서 학생 정보 기록 전송 시 호출되는 POST 요청 핸들러
- */
+// 2. 웹앱에서 데이터를 보냈을 때 시트에 안전하게 기재하는 POST 핸들러
 function doPost(e) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
-    // 시트가 비어있거나 첫 번째 줄에 헤더가 없으면 자동으로 헤더 생성 및 서식 적용
-    setupHeadersIfMissing(sheet);
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getActiveSheet();
 
-    // 전달된 데이터 추출
     let postData = {};
     if (e && e.postData && e.postData.contents) {
       try {
@@ -56,97 +36,228 @@ function doPost(e) {
       } catch (jsonErr) {
         postData = {};
       }
+    } else if (e && e.parameter) {
+      postData = e.parameter;
     }
 
-    // 핑(테스트) 요청 처리
+    // [테스트 핑 요청 처리]
     if (postData.action === "ping") {
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
-        message: "구글 시트 연동 테스트 완료"
+        message: "연동 테스트 성공! 스프레드시트와 정상 연결되었습니다.",
+        sheetName: sheet.getName()
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    const record = postData.record || {};
-
-    // 필수 입력값 검증 (학년, 반, 성명, 질환명)
-    if (!record.grade || !record.name || !record.disease) {
+    const rec = postData.record || postData || {};
+    if (!rec.name && !rec.disease) {
       return ContentService.createTextOutput(JSON.stringify({
         status: "error",
-        message: "필수 정보(학년, 성명, 질환명)가 누락되었습니다."
+        message: "학생 정보 또는 질환명이 전달되지 않았습니다."
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 11개 스키마 순서에 맞추어 행 데이터 조립
-    const rowData = [
-      sanitizeText(record.grade),          // 1. 학년
-      sanitizeText(record.class),          // 2. 반
-      sanitizeText(record.gender),         // 3. 성별
-      sanitizeText(record.name),           // 4. 성명
-      sanitizeText(record.disease),        // 5. 질환명
-      sanitizeText(record.symptomDate),    // 6. 증상 발생 일자
-      sanitizeText(record.suspendPeriod),  // 7. 등교중지 기간
-      sanitizeText(record.returnDate),     // 8. 등교일
-      sanitizeText(record.symptoms),       // 9. 주증상
-      sanitizeText(record.hospitalized),   // 10. 입원여부
-      sanitizeText(record.neisReported)    // 11. 나이스 보고여부
-    ];
+    // 1~5행을 검색하여 헤더 행 및 열 매핑 분석
+    const headerInfo = detectHeaderRow(sheet);
+    const headerRow = headerInfo.row;
+    const colMap = headerInfo.map;
+    const maxCols = Math.max(sheet.getLastColumn(), 15);
 
-    // 시트 마지막 줄에 새로운 행 추가
-    sheet.appendRow(rowData);
+    // 실제 데이터가 비어 있는 첫 행 찾기 (헤더 행 다음부터 성명 열 기준 탐색)
+    const checkCol = colMap.name || colMap.disease || 2;
+    const targetRow = findFirstEmptyRow(sheet, headerRow, checkCol);
 
-    // 마지막 행 서식 (가운데 정렬 등)
-    const lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 1, 1, 11).setVerticalAlignment("middle");
-    sheet.getRange(lastRow, 1, 1, 4).setHorizontalAlignment("center");
-    sheet.getRange(lastRow, 6, 1, 3).setHorizontalAlignment("center");
-    sheet.getRange(lastRow, 10, 1, 2).setHorizontalAlignment("center");
+    // 연번 계산: 이전 행 연번 + 1, 또는 (targetRow - headerRow)
+    let serialNo = targetRow - headerRow;
+    if (colMap.serial && targetRow > headerRow + 1) {
+      const prevVal = sheet.getRange(targetRow - 1, colMap.serial).getValue();
+      const parsed = parseInt(prevVal, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        serialNo = parsed + 1;
+      }
+    }
+
+    // 학년반 조합 (시트에 '학년반' 단일 열이 있을 때 대비)
+    const gradeClassStr = rec.gradeClass || (rec.class ? `${rec.grade} ${rec.class}` : rec.grade);
+
+    // [선생님께서 변경하신 열 순서에 맞추어 정확하게 셀에 기재]
+    if (colMap.serial) sheet.getRange(targetRow, colMap.serial).setValue(serialNo);
+    if (colMap.disease) sheet.getRange(targetRow, colMap.disease).setValue(sanitize(rec.disease));
+    if (colMap.grade) sheet.getRange(targetRow, colMap.grade).setValue(sanitize(rec.grade));
+    if (colMap.class) sheet.getRange(targetRow, colMap.class).setValue(sanitize(rec.class));
+    if (colMap.gradeClass) sheet.getRange(targetRow, colMap.gradeClass).setValue(sanitize(gradeClassStr));
+    if (colMap.number) sheet.getRange(targetRow, colMap.number).setValue(sanitize(rec.number));
+    if (colMap.name) sheet.getRange(targetRow, colMap.name).setValue(sanitize(rec.name));
+    if (colMap.gender) sheet.getRange(targetRow, colMap.gender).setValue(sanitize(rec.gender));
+    if (colMap.symptomDate) sheet.getRange(targetRow, colMap.symptomDate).setValue(sanitize(rec.symptomDate));
+    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.hospitalized));
+    if (colMap.symptoms) sheet.getRange(targetRow, colMap.symptoms).setValue(sanitize(rec.symptoms || "특이사항 없음"));
+    if (colMap.suspendPeriod) sheet.getRange(targetRow, colMap.suspendPeriod).setValue(sanitize(rec.suspendPeriod));
+    if (colMap.returnDate) sheet.getRange(targetRow, colMap.returnDate).setValue(sanitize(rec.returnDate));
+    if (colMap.neisReported) sheet.getRange(targetRow, colMap.neisReported).setValue(sanitize(rec.neisReported || "미보고"));
+    if (colMap.reportDate) sheet.getRange(targetRow, colMap.reportDate).setValue(sanitize(rec.reportDate || Utilities.formatDate(new Date(), "GMT+9", "yyyy-MM-dd")));
+    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
+
+    // 시트 세로 가운데 정렬 적용
+    sheet.getRange(targetRow, 1, 1, maxCols).setVerticalAlignment("middle");
 
     return ContentService.createTextOutput(JSON.stringify({
       status: "success",
-      message: "감염병 관리대장에 성공적으로 등록되었습니다.",
-      row: lastRow
+      message: `${targetRow}행에 성공적으로 등록되었습니다. (연번: ${serialNo})`,
+      row: targetRow
     })).setMimeType(ContentService.MimeType.JSON);
 
-  } catch (error) {
+  } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({
       status: "error",
-      message: error.toString()
+      message: err.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 /**
- * 첫 행에 11개 열 헤더가 없으면 자동으로 생성하고 배경색/굵게 처리
+ * 1~5행을 검사하여 실제 헤더 행을 감지하고, 열 순서 매핑 사전을 생성
  */
-function setupHeadersIfMissing(sheet) {
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(EXPECTED_HEADERS);
-    const headerRange = sheet.getRange(1, 1, 1, EXPECTED_HEADERS.length);
-    headerRange.setFontWeight("bold");
-    headerRange.setBackground("#0284c7");
-    headerRange.setFontColor("#ffffff");
-    headerRange.setHorizontalAlignment("center");
-    headerRange.setVerticalAlignment("middle");
-    sheet.setRowHeight(1, 35);
-    sheet.setFrozenRows(1);
-    
-    // 열 너비 자동 조정
-    for (let i = 1; i <= EXPECTED_HEADERS.length; i++) {
-      sheet.setColumnWidth(i, 110);
+function detectHeaderRow(sheet) {
+  const maxSearchRows = Math.min(Math.max(sheet.getLastRow(), 1), 6);
+  const maxCols = Math.max(sheet.getLastColumn(), 25);
+
+  for (let r = 1; r <= maxSearchRows; r++) {
+    const rowValues = sheet.getRange(r, 1, 1, maxCols).getValues()[0];
+    const rowText = rowValues.map(v => String(v || "").replace(/\s+/g, "").toLowerCase()).join(" ");
+
+    const keywords = ["성명", "이름", "질환", "병명", "학년", "반", "증상", "등교", "연번", "번호"];
+    let matchCount = 0;
+    keywords.forEach(kw => {
+      if (rowText.includes(kw)) matchCount++;
+    });
+
+    if (matchCount >= 2) {
+      return {
+        row: r,
+        map: buildColumnMapping(rowValues)
+      };
     }
-    sheet.setColumnWidth(5, 160); // 질환명
-    sheet.setColumnWidth(7, 200); // 등교중지 기간
-    sheet.setColumnWidth(9, 200); // 주증상
   }
+
+  // 완전 새 시트인 경우 1행에 나이스 표준 15개 열 생성
+  if (sheet.getLastRow() === 0 || sheet.getLastColumn() === 0) {
+    const defaultHeaders = [
+      "연번", "질환명", "학년", "반", "번호", "성명", "성별",
+      "증상 발생 일자", "입원여부", "주증상", "등교중지 기간", "등교일",
+      "감염병 나이스 보고 여부", "보고일", "비고"
+    ];
+    sheet.getRange(1, 1, 1, defaultHeaders.length).setValues([defaultHeaders]);
+    sheet.getRange(1, 1, 1, defaultHeaders.length)
+      .setFontWeight("bold")
+      .setBackground("#16375a")
+      .setFontColor("#ffffff")
+      .setHorizontalAlignment("center")
+      .setVerticalAlignment("middle");
+    sheet.setRowHeight(1, 35);
+    return {
+      row: 1,
+      map: buildColumnMapping(defaultHeaders)
+    };
+  }
+
+  // 1행을 기본으로 사용
+  const row1Values = sheet.getRange(1, 1, 1, maxCols).getValues()[0];
+  return {
+    row: 1,
+    map: buildColumnMapping(row1Values)
+  };
 }
 
 /**
- * 수식 인젝션 방지 및 텍스트 정제
+ * 헤더 텍스트를 분석하여 사용자가 바꾼 열 순서(몇 번째 열인지)를 자동 파악
  */
-function sanitizeText(value) {
-  if (value === null || value === undefined) return "";
-  let str = String(value).trim();
-  // '=' 또는 '+' 또는 '-'로 시작하여 스프레드시트 수식으로 오작동하는 것을 방지
+function buildColumnMapping(headers) {
+  const map = {};
+  for (let i = 0; i < headers.length; i++) {
+    const raw = String(headers[i] || "").replace(/\s+/g, "").toLowerCase();
+    const col = i + 1;
+    if (!raw) continue;
+
+    if (raw.includes("연번") || raw === "no" || raw === "no.") {
+      map.serial = col;
+    } else if (raw.includes("질환") || raw.includes("병명") || raw.includes("감염병명") || raw.includes("상병")) {
+      map.disease = col;
+    } else if (raw.includes("학년반") || raw.includes("학반")) {
+      map.gradeClass = col;
+    } else if (raw.includes("학년")) {
+      map.grade = col;
+    } else if (raw.includes("반") && !raw.includes("학년")) {
+      map.class = col;
+    } else if (raw.includes("번호") || raw.includes("출석번호") || raw.includes("학생번호")) {
+      map.number = col;
+    } else if (raw.includes("성명") || raw.includes("이름") || raw.includes("학생명")) {
+      map.name = col;
+    } else if (raw.includes("성별") || raw === "성") {
+      map.gender = col;
+    } else if (raw.includes("발생") || raw.includes("발견") || raw.includes("발병") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
+      map.symptomDate = col;
+    } else if (raw.includes("입원")) {
+      map.hospitalized = col;
+    } else if (raw.includes("주증상") || (raw.includes("증상") && !raw.includes("일자") && !raw.includes("일"))) {
+      map.symptoms = col;
+    } else if (raw.includes("중지") || raw.includes("격리") || (raw.includes("출석인정") && raw.includes("기간"))) {
+      map.suspendPeriod = col;
+    } else if (raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
+      map.returnDate = col;
+    } else if (raw.includes("나이스") || (raw.includes("보고") && raw.includes("여부"))) {
+      map.neisReported = col;
+    } else if (raw.includes("보고일") || raw.includes("등록일") || raw.includes("작성일")) {
+      map.reportDate = col;
+    } else if (raw.includes("비고") || raw.includes("특이사항") || raw.includes("참고")) {
+      map.note = col;
+    }
+  }
+
+  // 매핑 실패 시 나이스 최신 15개 열 기본값 보정
+  if (!map.disease && !map.name) {
+    map.serial = 1;
+    map.disease = 2;
+    map.grade = 3;
+    map.class = 4;
+    map.number = 5;
+    map.name = 6;
+    map.gender = 7;
+    map.symptomDate = 8;
+    map.hospitalized = 9;
+    map.symptoms = 10;
+    map.suspendPeriod = 11;
+    map.returnDate = 12;
+    map.neisReported = 13;
+    map.reportDate = 14;
+    map.note = 15;
+  }
+
+  return map;
+}
+
+/**
+ * 헤더 행 아래에서 지정한 열(성명 열 등)이 비어있는 첫 행을 찾음
+ */
+function findFirstEmptyRow(sheet, headerRow, checkCol) {
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  if (lastRow <= headerRow) return headerRow + 1;
+
+  const searchCount = Math.max(lastRow - headerRow + 10, 50);
+  const values = sheet.getRange(headerRow + 1, checkCol, searchCount, 1).getValues();
+
+  for (let i = 0; i < values.length; i++) {
+    const val = values[i][0];
+    if (val === "" || val === null || val === undefined) {
+      return headerRow + 1 + i;
+    }
+  }
+  return headerRow + 1 + values.length;
+}
+
+function sanitize(val) {
+  if (val === null || val === undefined) return "";
+  let str = String(val).trim();
   if (str.startsWith("=") || str.startsWith("+") || (str.startsWith("-") && isNaN(str))) {
     str = "'" + str;
   }
