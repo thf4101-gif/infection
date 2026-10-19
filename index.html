@@ -4,22 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>등교중지 필요한 질병 찾기 - 초등학교 보건실</title>
-  <meta name="description" content="초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (감염병 관리대장 연동)" />
+  <meta name="description" content="초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (교육부·질병관리청 공식 지침 근거)" />
   <meta property="og:title" content="등교중지 필요한 질병 찾기 - 초등학교 보건실" />
-  <meta property="og:description" content="초등학교 보건교사를 위한 감염병 등교중지 여부 및 출석인정 기간 판정 웹앱 (감염병 관리대장 연동)" />
+  <meta property="og:description" content="교육부·질병관리청 학생 감염병 예방·위기대응 매뉴얼 및 학교보건법 제8조 기준" />
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="./style.css" />
 </head>
-<body>
+<body class="school-theme">
   <div class="app-container">
     <!-- 헤더 -->
-    <header class="header">
+    <header class="header school-header">
       <div class="header-content">
         <div class="title-group">
-          <span class="cross-icon">🏥</span>
+          <div class="header-icon-badge">
+            <span class="cross-icon">🏥</span>
+          </div>
           <div>
             <h1>등교중지 필요한 질병 찾기</h1>
-            <p class="subtitle">초등학교 학생 감염병 예방·관리 지침 및 질병관리청 기준</p>
+            <p class="subtitle">초등학교 학생 감염병 예방·관리 지침 및 법정 감염병 출결 판정 시스템 (2025.1.1. 기준)</p>
           </div>
         </div>
         <div class="header-actions">
@@ -31,22 +33,31 @@
       </div>
     </header>
 
-    <!-- [상단] 질병명 검색 영역 -->
-    <section class="section search-section">
+    <!-- [상단] 질병명 검색 영역 (우측 돋보기 배치) -->
+    <section class="section search-section modern-card">
       <div class="search-box-container">
-        <label for="diseaseSearchInput" class="search-label">
-          <strong>질병명 또는 질병코드 검색</strong>
-          <span class="search-tip">(질병명 예: 수두, 독감, 수족구, 홍역 / 코드 예: B01, J10, B08.4)</span>
-        </label>
+        <div class="search-label-row">
+          <label for="diseaseSearchInput" class="search-label">
+            <strong>질병명 또는 질병코드 검색</strong>
+            <span class="search-tip">(예: 아데노바이러스, 수두, 독감, 수족구, 마이코플라스마, 백일해, 노로, 코로나 등)</span>
+          </label>
+          <span class="category-tag">법정 감염병 1~4급 수록</span>
+        </div>
+        
+        <!-- 검색창: 돋보기가 우측에 배정됨 -->
         <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
           <input 
             type="text" 
             id="diseaseSearchInput" 
-            placeholder="질병명이나 질병코드를 입력하면 자동으로 감염병 지침을 찾습니다..." 
+            placeholder="질병명이나 질병코드를 입력하면 자동으로 감염병 지침과 출결 규정을 찾습니다..." 
             autocomplete="off"
           />
-          <button type="button" id="btnClearSearch" class="btn-clear" aria-label="검색어 지우기">&times;</button>
+          <div class="search-right-actions">
+            <button type="button" id="btnClearSearch" class="btn-clear" aria-label="검색어 지우기" title="지우기">&times;</button>
+            <button type="button" id="btnSearchSubmit" class="search-icon-btn" aria-label="검색하기" title="검색">
+              <span class="search-icon">🔍</span>
+            </button>
+          </div>
         </div>
         <!-- 자동완성 제안 목록 드롭다운 -->
         <div id="autocompleteList" class="autocomplete-dropdown hidden"></div>
@@ -54,19 +65,22 @@
 
       <!-- 빠른 선택 칩 -->
       <div class="quick-chips-wrapper">
-        <span class="quick-chips-label">자주 찾는 감염병:</span>
+        <span class="quick-chips-label">자주 찾는 학교 감염병:</span>
         <div class="quick-chips" id="quickChipsContainer">
           <!-- JS로 동적 생성 및 클릭 시 즉시 선택 -->
         </div>
       </div>
     </section>
 
-    <!-- [중앙] 2열 레이아웃: 왼쪽(학생 인적사항) / 오른쪽(등교중지 근거) -->
+    <!-- [중앙] 2열 레이아웃: 왼쪽(학생 인적사항) / 오른쪽(등교중지 근거 및 상세 출처) -->
     <main class="main-content-grid">
       <!-- [왼쪽] 학생 인적사항 및 감염병 관리대장 입력 -->
-      <section class="card left-card">
+      <section class="card left-card modern-card">
+        <div class="card-accent-bar"></div>
         <div class="card-header">
-          <h2>👤 학생 인적사항 및 관리대장 기록</h2>
+          <div class="card-title-group">
+            <h2>👤 학생 인적사항 및 관리대장 기록</h2>
+          </div>
           <span class="badge-tag">감염병 관리대장</span>
         </div>
 
@@ -129,12 +143,12 @@
           <!-- 주증상 -->
           <div class="form-group">
             <label for="inputSymptoms">주증상 (발열, 기침, 발진 등)</label>
-            <input type="text" id="inputSymptoms" placeholder="예: 38.2℃ 발열, 전신 수포성 발진, 가려움증" />
+            <input type="text" id="inputSymptoms" placeholder="예: 38.2℃ 발열, 전신 수포성 발진, 기침, 인후통" />
           </div>
 
           <!-- 계산된 등교중지 기간 및 등교일 -->
-          <div class="form-highlight-box">
-            <div class="highlight-title">🗓️ 출석인정 등교중지 산정</div>
+          <div class="form-highlight-box swatch-box">
+            <div class="highlight-title">🗓️ 출석인정 등교중지 산정 (교육부 지침 기준)</div>
             <div class="form-row-2">
               <div class="form-group">
                 <label for="inputSuspendPeriod">등교중지 기간 (자동계산/수정가능)</label>
@@ -160,20 +174,28 @@
         </form>
       </section>
 
-      <!-- [오른쪽] 등교중지 여부를 결정한 근거 내용 -->
-      <section class="card right-card">
+      <!-- [오른쪽] 등교중지 여부를 결정한 근거 내용 및 출처 문서 명시 (교사용 행정 근거) -->
+      <section class="card right-card modern-card">
+        <div class="card-accent-bar bar-source"></div>
         <div class="card-header">
-          <h2>📋 등교중지 여부 결정 근거 및 지침</h2>
+          <div class="card-title-group">
+            <h2>📋 등교중지 결정 근거 및 출처 문서</h2>
+          </div>
           <span id="selectedDiseaseBadge" class="badge-tag">선택 대기</span>
         </div>
 
         <div id="decisionBasisEmpty" class="basis-empty-state">
-          <div class="empty-icon">🔎</div>
-          <p class="empty-title">질병을 검색하거나 선택해주세요</p>
-          <p class="empty-desc">상단 검색창에 질병명 또는 코드를 입력하시면 질병관리청 및 교육청 지침에 따른 등교중지 판정 기준과 출결 인정 서류 안내가 나타납니다.</p>
+          <div class="empty-icon-circle">🔎</div>
+          <p class="empty-title">질병을 검색하거나 상단 칩을 선택해주세요</p>
+          <p class="empty-desc">
+            질병명을 검색하시면 <strong>교육부 학생 감염병 예방 매뉴얼</strong>, 
+            <strong>질병관리청 관리지침</strong>, <strong>학교보건법</strong> 등 
+            정확한 공문서 및 법률 조항 출처가 이곳에 상세히 안내됩니다.
+          </p>
         </div>
 
         <div id="decisionBasisContent" class="basis-content hidden">
+          <!-- 상단 메타 그리드 -->
           <div class="basis-top-meta">
             <div class="meta-item">
               <span class="meta-label">법정 감염병 분류</span>
@@ -186,6 +208,32 @@
             <div class="meta-item">
               <span class="meta-label">NEIS 법정보고</span>
               <span id="basisNeisDuty" class="meta-val">-</span>
+            </div>
+          </div>
+
+          <!-- 공식 근거 문서 및 출처 명시 카드 -->
+          <div class="basis-block official-sources-block">
+            <div class="block-header-with-tag">
+              <h3 class="block-title">📚 공식 근거 문서 및 법령 출처</h3>
+              <span class="official-verified-badge">보건교사용 행정근거</span>
+            </div>
+            <div class="source-card">
+              <div class="source-row">
+                <span class="source-tag law-tag">상위 법률</span>
+                <span id="basisPrimaryLaw" class="source-text">-</span>
+              </div>
+              <div class="source-row">
+                <span class="source-tag manual-tag">정부 매뉴얼</span>
+                <span id="basisManualSource" class="source-text">-</span>
+              </div>
+              <div class="source-row">
+                <span class="source-tag attend-tag">출결 훈령</span>
+                <span id="basisAttendanceRule" class="source-text">-</span>
+              </div>
+              <div class="source-row" id="basisKdcaRow">
+                <span class="source-tag kdca-tag">질병청 지침</span>
+                <span id="basisKdcaGuide" class="source-text">-</span>
+              </div>
             </div>
           </div>
 
@@ -205,24 +253,28 @@
           </div>
 
           <div class="basis-block">
-            <h3 class="block-title">💡 보건실 안내 및 가정통신 유의사항</h3>
+            <h3 class="block-title">💡 보건실 안내 및 주의사항</h3>
             <div id="basisTeacherNotice" class="block-body notice-box"></div>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- [하단] 등교중지 필요/권고/필요없음 안내 & 대장 등록 액션 -->
-    <section class="section bottom-decision-section">
+    <!-- [하단] 등교중지 판정 안내 배너 & 대장 등록 액션 -->
+    <section class="section bottom-decision-section modern-card">
       <div id="decisionBanner" class="decision-banner default-state">
-        <div class="decision-icon" id="decisionIcon">ℹ️</div>
+        <!-- 상태 아이콘 블록 -->
+        <div class="banner-status-visual" id="bannerStatusVisual">
+          <span class="banner-emoji" id="decisionIcon">ℹ️</span>
+        </div>
+
         <div class="decision-text-group">
           <div class="decision-headline-row">
             <h2 id="decisionStatusTitle">질병을 선택하면 등교중지 여부가 안내됩니다</h2>
             <span id="decisionStatusPill" class="decision-pill status-ready">대기</span>
           </div>
           <p id="decisionSummaryText" class="decision-summary">
-            질병명과 증상 발생 일자를 입력하시면 정확한 등교중지 필요 여부와 권고 기간이 산출됩니다.
+            질병명과 증상 발생 일자를 입력하시면 공식 매뉴얼 기준의 정확한 등교중지 필요 여부와 권고 기간이 산출됩니다.
           </p>
         </div>
       </div>
@@ -233,7 +285,7 @@
           <span class="btn-icon">📥</span> 구글 감염병 관리대장에 등록
         </button>
         <button type="button" id="btnCopyResult" class="btn btn-secondary">
-          <span class="btn-icon">📋</span> 결과 및 가정안내문 복사
+          <span class="btn-icon">📋</span> 결과 및 가정안내문 간략 복사
         </button>
         <button type="button" id="btnResetForm" class="btn btn-outline">
           <span class="btn-icon">🔄</span> 새로 입력
@@ -245,9 +297,12 @@
     </section>
 
     <!-- 최근 등록 내역 (로컬 보관 및 백업) -->
-    <section class="section history-section">
+    <section class="section history-section modern-card">
       <div class="history-header">
-        <h3>📑 당일 관리대장 등록 내역 (<span id="historyCount">0</span>건)</h3>
+        <div class="history-title-wrap">
+          <span class="dot-badge"></span>
+          <h3>📑 당일 관리대장 등록 내역 (<span id="historyCount">0</span>건)</h3>
+        </div>
         <button type="button" id="btnClearHistory" class="btn-link">내역 비우기</button>
       </div>
       <div class="table-responsive">
@@ -276,8 +331,8 @@
 
     <!-- 푸터 -->
     <footer class="footer">
-      <p>근거 자료: 질병관리청 감염병포털 및 교육부 「학생 감염병 예방·위기대응 매뉴얼」</p>
-      <p class="footer-sub">※ 본 도구는 보건교사의 신속한 판단을 돕기 위한 보조 도구이며, 개별 학생의 증상 및 주치의 소견서에 따라 최종 등교일이 달라질 수 있습니다.</p>
+      <p>공식 근거: 「감염병의 예방 및 관리에 관한 법률」(2025.1.1. 기준), 「학교보건법」 제8조, 교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」</p>
+      <p class="footer-sub">※ 본 웹앱은 초등학교 보건교사의 신속하고 정확한 법적 결정을 돕기 위한 보조 도구이며, 개별 학생의 상태 및 주치의 소견서에 따라 최종 등교일이 결정됩니다.</p>
     </footer>
   </div>
 
@@ -285,12 +340,14 @@
   <div id="sheetModal" class="modal-overlay hidden">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3>📊 구글 스프레드시트 연동 설정</h3>
+        <div class="modal-title-wrap">
+          <h3>📊 구글 스프레드시트 연동 설정</h3>
+        </div>
         <button type="button" id="btnCloseModal" class="btn-close">&times;</button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          학교 구글 계정으로 생성한 Google Apps Script(웹 앱) URL을 등록하시면 클릭 한 번으로 감염병 관리대장 시트에 자동 누적됩니다.
+          선생님의 학교 구글 계정으로 생성한 Google Apps Script(웹 앱) URL을 등록하시면 클릭 한 번으로 감염병 관리대장 시트에 자동 누적됩니다.
         </p>
 
         <div class="modal-schema-guide">
