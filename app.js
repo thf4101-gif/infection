@@ -838,6 +838,13 @@
     codeViewContainer: document.getElementById('codeViewContainer'),
     codeGsTextarea: document.getElementById('codeGsTextarea'),
 
+    noticeModal: document.getElementById('noticeModal'),
+    btnCloseNoticeModal: document.getElementById('btnCloseNoticeModal'),
+    btnCloseNoticeModalBtn: document.getElementById('btnCloseNoticeModalBtn'),
+    btnReCopyNotice: document.getElementById('btnReCopyNotice'),
+    noticeTextarea: document.getElementById('noticeTextarea'),
+    noticeCharCount: document.getElementById('noticeCharCount'),
+
     toastContainer: document.getElementById('toastContainer')
   };
 
@@ -1403,8 +1410,31 @@
   }
 
   /* ============================================================
-     9. [요청 2 반영] 가정안내문 간략 복사 (출처 제외, 학부모 알림용)
+     9. [요청 반영] 가정안내문 간략 복사 및 팝업창 자동 표시
   ============================================================ */
+  function openNoticeModal(text) {
+    if (!elements.noticeModal) return;
+    if (elements.noticeTextarea) {
+      elements.noticeTextarea.value = text;
+      if (elements.noticeCharCount) {
+        elements.noticeCharCount.textContent = `${text.length}자`;
+      }
+    }
+    elements.noticeModal.classList.remove('hidden');
+    if (elements.noticeTextarea) {
+      elements.noticeTextarea.focus();
+      setTimeout(() => {
+        elements.noticeTextarea.select();
+      }, 50);
+    }
+  }
+
+  function closeNoticeModal() {
+    if (elements.noticeModal) {
+      elements.noticeModal.classList.add('hidden');
+    }
+  }
+
   function handleCopyResult() {
     const record = getFormDataRecord();
     if (!record) return;
@@ -1420,9 +1450,11 @@
       fluNotice = '\n※ [독감 등교 기준 안내] 해열제 복용 없이 정상체온을 회복한 후 24시간이 경과해야 등교 가능합니다. (단, 해열제를 투약한 경우에는 마지막 해열제 투약 시점부터 48시간 동안 발열이 없는지 경과 관찰 후 등교)';
     }
 
+    const studentInfo = `${record.grade} ${record.class}${record.number ? ' ' + record.number + '번' : ''} ${record.name}`;
+
     const copyText = `[초등학교 보건실] 등교중지 및 출결 안내
 
-■ 학생: ${record.grade} ${record.class} ${record.name}
+■ 학생: ${studentInfo}
 ■ 질환명: ${diseaseName}
 ■ 증상 발생일: ${record.symptomDate}
 ■ 등교중지 시작일: ${record.suspendStartDate || record.suspendPeriod}
@@ -1433,16 +1465,20 @@
 ※ 감염병 전파 차단을 위해 전염력이 소실될 때까지 가정 내 요양 및 휴식을 부탁드립니다.${fluNotice}
 ※ 위 기간은 [출석인정 결석]으로 처리되며, 완치 후 등교 시 위 증빙 서류를 담임선생님께 제출해 주시기 바랍니다.`;
 
+    // 1. 자동으로 클립보드 복사
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(copyText).then(() => {
-        showToast('📋 가정안내문이 간략하게 복사되었습니다.');
-        setFeedback('📋 학부모 알림장(하이클래스/문자 등)용 간략 안내문이 복사되었습니다.', 'success');
+        showToast('📋 가정안내문이 클립보드에 자동 복사되었습니다.');
+        setFeedback('📋 학부모 알림장용 가정안내문이 팝업으로 표시되고 클립보드에 자동 복사되었습니다.', 'success');
       }).catch(() => {
         fallbackCopyText(copyText);
       });
     } else {
       fallbackCopyText(copyText);
     }
+
+    // 2. [사용자 요청] 클릭 시 자동으로 팝업창(모달) 띄우기
+    openNoticeModal(copyText);
   }
 
   function fallbackCopyText(text) {
@@ -1772,6 +1808,63 @@
     });
     elements.btnSaveSheetUrl.addEventListener('click', saveSheetUrl);
     elements.btnTestConnection.addEventListener('click', testSheetConnection);
+
+    // 6. 가정안내문 팝업 모달 이벤트
+    if (elements.btnCloseNoticeModal) {
+      elements.btnCloseNoticeModal.addEventListener('click', closeNoticeModal);
+    }
+    if (elements.btnCloseNoticeModalBtn) {
+      elements.btnCloseNoticeModalBtn.addEventListener('click', closeNoticeModal);
+    }
+    if (elements.noticeModal) {
+      elements.noticeModal.addEventListener('click', (e) => {
+        if (e.target === elements.noticeModal) closeNoticeModal();
+      });
+    }
+
+    if (elements.noticeTextarea) {
+      elements.noticeTextarea.addEventListener('input', () => {
+        if (elements.noticeCharCount) {
+          elements.noticeCharCount.textContent = `${elements.noticeTextarea.value.length}자`;
+        }
+      });
+    }
+
+    if (elements.btnReCopyNotice) {
+      elements.btnReCopyNotice.addEventListener('click', () => {
+        const textToCopy = elements.noticeTextarea ? elements.noticeTextarea.value : '';
+        if (!textToCopy) return;
+
+        const originalBtnHtml = elements.btnReCopyNotice.innerHTML;
+        const doCopyFeedback = () => {
+          showToast('✅ 가정안내문 문구가 클립보드에 복사되었습니다!');
+          elements.btnReCopyNotice.innerHTML = '<span class="btn-icon">✅</span> 복사 완료!';
+          elements.btnReCopyNotice.style.backgroundColor = '#15803d';
+          setTimeout(() => {
+            elements.btnReCopyNotice.innerHTML = originalBtnHtml;
+            elements.btnReCopyNotice.style.backgroundColor = '';
+          }, 2000);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(doCopyFeedback).catch(() => {
+            fallbackCopyText(textToCopy);
+            doCopyFeedback();
+          });
+        } else {
+          fallbackCopyText(textToCopy);
+          doCopyFeedback();
+        }
+      });
+    }
+
+    // 7. ESC 키로 모든 팝업 모달 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeNoticeModal();
+        closeSheetModal();
+      }
+    });
   }
 
   // Google Apps Script Code.gs 전체 최신 소스코드 (나이스 열 순서 자동 인식 & 새 시트 자동 서식)

@@ -469,6 +469,44 @@
       </div>
     </div>
   </div>
+  <!-- 구글 시트 연동 설정 모달 끝 -->
+
+  <!-- 결과 및 가정안내문 간략 팝업 모달 -->
+  <div id="noticeModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="noticeModalTitle">
+    <div class="modal-dialog modal-dialog-notice">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 id="noticeModalTitle">📨 가정안내문 (학부모 알림장·문자용) 미리보기</h3>
+        </div>
+        <button type="button" id="btnCloseNoticeModal" class="btn-close" aria-label="닫기">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="notice-success-banner">
+          <span class="notice-banner-icon">✅</span>
+          <div class="notice-banner-text">
+            <strong>클립보드에 자동 복사되었습니다!</strong>
+            <p>하이클래스, e알리미, 학교 문자메시지 입력창에 바로 <strong>[붙여넣기 (Ctrl + V)]</strong>하여 발송하실 수 있습니다.</p>
+          </div>
+        </div>
+
+        <div class="notice-preview-box">
+          <div class="notice-box-top">
+            <span class="notice-box-label">📝 발송 문안 (필요시 문구를 직접 수정한 뒤 다시 복사하실 수 있습니다)</span>
+            <span class="notice-char-count" id="noticeCharCount">0자</span>
+          </div>
+          <textarea id="noticeTextarea" class="notice-textarea" rows="12" spellcheck="false" placeholder="가정안내문 내용이 여기에 표시됩니다"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnReCopyNotice" class="btn btn-primary">
+          <span class="btn-icon">📋</span> 문구 다시 복사하기
+        </button>
+        <button type="button" id="btnCloseNoticeModalBtn" class="btn btn-secondary">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- 토스트 알림 컨테이너 -->
   <div id="toastContainer" class="toast-container"></div>
