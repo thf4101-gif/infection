@@ -74,98 +74,187 @@
 
     <!-- [중앙] 2열 레이아웃: 왼쪽(학생 인적사항) / 오른쪽(등교중지 근거 및 상세 출처) -->
     <main class="main-content-grid">
-      <!-- [왼쪽] 학생 인적사항 및 감염병 관리대장 입력 -->
-      <section class="card left-card modern-card">
-        <div class="card-accent-bar"></div>
-        <div class="card-header">
-          <div class="card-title-group">
-            <h2>👤 학생 인적사항 및 관리대장 기록</h2>
+      <!-- [왼쪽] 4세대 나이스(NEIS) 감염병환자등록 인터페이스 -->
+      <section class="card left-card neis-card modern-card">
+        <div class="card-accent-bar bar-neis"></div>
+        <div class="card-header neis-card-header">
+          <div class="card-title-group neis-title-group">
+            <span class="neis-capsule-icon">▮</span>
+            <h2>감염병환자등록</h2>
           </div>
-          <span class="badge-tag">감염병 관리대장</span>
         </div>
 
-        <form id="studentRecordForm" class="form-grid">
-          <!-- 학년 / 반 / 번호 -->
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="inputGrade">학년 <span class="required">*</span></label>
-              <select id="inputGrade" required>
-                <option value="">선택</option>
-                <option value="1학년">1학년</option>
-                <option value="2학년">2학년</option>
-                <option value="3학년">3학년</option>
-                <option value="4학년">4학년</option>
-                <option value="5학년">5학년</option>
-                <option value="6학년">6학년</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputClass">반 <span class="required">*</span></label>
-              <input type="text" id="inputClass" placeholder="예: 3반" required />
-            </div>
-            <div class="form-group">
-              <label for="inputNumber">번호</label>
-              <input type="number" id="inputNumber" placeholder="예: 15" min="1" max="99" />
-            </div>
+        <!-- 나이스 상단 공식 안내문구 및 접기 버튼 (나이스 시스템 원문) -->
+        <div class="neis-notice-wrap">
+          <div class="neis-notice-banner" id="neisNoticeBanner">
+            <p>※ 병명에서 [기타(법정)] 또는 [기타(비법정)]을 선택하시면 감염병명을 직접입력 할 수 있습니다.</p>
           </div>
-
-          <!-- 성명 / 성별 -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="inputName">학생 성명 <span class="required">*</span></label>
-              <input type="text" id="inputName" placeholder="홍길동" required />
-            </div>
-            <div class="form-group">
-              <label for="inputGender">성별 <span class="required">*</span></label>
-              <select id="inputGender" required>
-                <option value="">선택</option>
-                <option value="남">남</option>
-                <option value="여">여</option>
-              </select>
-            </div>
+          <div class="neis-toggle-bar">
+            <button type="button" class="btn-neis-toggle" id="btnToggleNeisNotice" title="안내문 접기/펼치기" aria-label="안내문 토글">▲</button>
           </div>
+        </div>
 
-          <!-- 증상 발생 일자 / 입원 여부 -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="inputSymptomDate">증상 발생 일자 <span class="required">*</span></label>
-              <input type="date" id="inputSymptomDate" required />
-            </div>
-            <div class="form-group">
-              <label for="inputHospitalized">입원 여부</label>
-              <select id="inputHospitalized">
-                <option value="아니오">아니오(자가격리/외래)</option>
-                <option value="예">예(병원 입원)</option>
-              </select>
-            </div>
-          </div>
+        <!-- 4세대 나이스 입력 양식 테이블 -->
+        <form id="studentRecordForm" class="neis-form-wrap">
+          <table class="neis-form-table">
+            <colgroup>
+              <col style="width: 17%;" />
+              <col style="width: 33%;" />
+              <col style="width: 17%;" />
+              <col style="width: 33%;" />
+            </colgroup>
+            <tbody>
+              <!-- Row 1: *성명 / 학년/반/번호 -->
+              <tr>
+                <th class="th-req"><span class="ast">*</span>성명</th>
+                <td>
+                  <div class="neis-name-cell">
+                    <input type="text" id="inputName" placeholder="성명 입력" required />
+                    <button type="button" id="btnFindStudent" class="btn-neis-blue">학생찾기</button>
+                  </div>
+                </td>
+                <th class="th-opt">학년/반/번호</th>
+                <td>
+                  <div class="neis-class-cell">
+                    <select id="inputGrade" required>
+                      <option value="">학년</option>
+                      <option value="1학년">1학년</option>
+                      <option value="2학년">2학년</option>
+                      <option value="3학년">3학년</option>
+                      <option value="4학년">4학년</option>
+                      <option value="5학년">5학년</option>
+                      <option value="6학년">6학년</option>
+                    </select>
+                    <input type="text" id="inputClass" placeholder="반" class="input-class" required />
+                    <input type="number" id="inputNumber" placeholder="번호" class="input-num" min="1" max="99" />
+                    <select id="inputGender" class="input-gender" required>
+                      <option value="">성별</option>
+                      <option value="남">남</option>
+                      <option value="여">여</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
 
-          <!-- 주증상 -->
-          <div class="form-group">
-            <label for="inputSymptoms">주증상 (발열, 기침, 발진 등)</label>
-            <input type="text" id="inputSymptoms" placeholder="예: 38.2℃ 발열, 전신 수포성 발진, 기침, 인후통" />
-          </div>
+              <!-- Row 2: 발생인지일 / *치료현황 -->
+              <tr>
+                <th class="th-opt">발생인지일</th>
+                <td>
+                  <div class="neis-date-cell">
+                    <input type="date" id="inputSymptomDate" required />
+                  </div>
+                </td>
+                <th class="th-req"><span class="ast">*</span>치료현황</th>
+                <td>
+                  <select id="inputTreatmentStatus" class="neis-select-full" required>
+                    <option value="">선택</option>
+                    <option value="입원">입원</option>
+                    <option value="통원치료" selected>통원치료</option>
+                    <option value="완치">완치</option>
+                    <option value="보고오류(삭제대상)">보고오류(삭제대상)</option>
+                  </select>
+                  <input type="hidden" id="inputHospitalized" value="아니오" />
+                </td>
+              </tr>
 
-          <!-- 등교중지 시작일 / 실제 등교일 -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="inputSuspendStartDate">등교중지 시작일 <span class="required">*</span></label>
-              <input type="date" id="inputSuspendStartDate" required />
-            </div>
-            <div class="form-group">
-              <label for="inputReturnDate">실제 등교일</label>
-              <input type="date" id="inputReturnDate" />
-            </div>
-          </div>
+              <!-- Row 3: *병명 (법정/비법정 + 드롭다운 선택) -->
+              <tr>
+                <th class="th-req"><span class="ast">*</span>병명</th>
+                <td colspan="3">
+                  <div class="neis-disease-cell">
+                    <select id="inputDiseaseCategory" class="select-category">
+                      <option value="법정" selected>법정</option>
+                      <option value="비법정">비법정</option>
+                    </select>
+                    <select id="inputDiseaseSelect" class="select-disease-list">
+                      <option value="">선택</option>
+                    </select>
+                    <input type="text" id="inputCustomDisease" class="input-custom-disease hidden" placeholder="감염병명을 직접 입력하세요" />
+                  </div>
+                </td>
+              </tr>
 
-          <!-- 나이스(NEIS) 보고여부 -->
-          <div class="form-group">
-            <label for="inputNeisReported">나이스(NEIS) 보고여부 <span class="required">*</span></label>
-            <select id="inputNeisReported" required>
-              <option value="미보고">미보고 (작성 대기)</option>
-              <option value="보고완료">보고완료</option>
-              <option value="해당없음(비보고대상)">해당없음 (비보고 대상)</option>
-            </select>
+              <!-- Row 4: *발견경위 / *등교중지여부 -->
+              <tr>
+                <th class="th-req"><span class="ast">*</span>발견경위</th>
+                <td>
+                  <select id="inputDiscoveryRoute" class="neis-select-full" required>
+                    <option value="">선택</option>
+                    <option value="개인진료" selected>개인진료</option>
+                    <option value="학교건강검진">학교건강검진</option>
+                    <option value="학교집단 별도검사">학교집단 별도검사</option>
+                    <option value="보건소 역학조사">보건소 역학조사</option>
+                    <option value="기타">기타</option>
+                  </select>
+                </td>
+                <th class="th-req"><span class="ast">*</span>등교중지여부</th>
+                <td>
+                  <select id="inputSuspensionStatus" class="neis-select-full" required>
+                    <option value="">선택</option>
+                    <option value="등교">등교</option>
+                    <option value="등교중지" selected>등교중지</option>
+                  </select>
+                </td>
+              </tr>
+
+              <!-- Row 5: 완치일자 / *확진여부 -->
+              <tr>
+                <th class="th-opt">완치일자</th>
+                <td>
+                  <div class="neis-date-cell">
+                    <input type="date" id="inputReturnDate" placeholder="실제 등교일/완치일" />
+                  </div>
+                </td>
+                <th class="th-req"><span class="ast">*</span>확진여부</th>
+                <td>
+                  <select id="inputConfirmedStatus" class="neis-select-full" required>
+                    <option value="">선택</option>
+                    <option value="확진" selected>확진</option>
+                    <option value="의심">의심</option>
+                  </select>
+                </td>
+              </tr>
+
+              <!-- Row 6: *주요증상 -->
+              <tr>
+                <th class="th-req"><span class="ast">*</span>주요증상</th>
+                <td colspan="3">
+                  <textarea id="inputSymptoms" class="neis-textarea" rows="2" placeholder="발열, 기침, 발진, 인후통 등 주요 증상 입력"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 7: 참고사항 -->
+              <tr>
+                <th class="th-opt">참고사항</th>
+                <td colspan="3">
+                  <textarea id="inputRemarks" class="neis-textarea" rows="2" placeholder="환자의 치료현황 변경시 입력.&#10;증빙서류 제출 여부 입력"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 8: 등교중지 시작일 / 나이스 보고여부 (사용자 요청: 나이스 보고여부는 남겨줘) -->
+              <tr>
+                <th class="th-opt">등교중지 시작일</th>
+                <td>
+                  <div class="neis-date-cell">
+                    <input type="date" id="inputSuspendStartDate" required />
+                  </div>
+                </td>
+                <th class="th-req"><span class="ast">*</span>나이스 보고여부</th>
+                <td>
+                  <select id="inputNeisReported" class="neis-select-full" required>
+                    <option value="미보고" selected>미보고 (작성 대기)</option>
+                    <option value="보고완료">보고완료</option>
+                    <option value="해당없음(비보고대상)">해당없음 (비보고 대상)</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 4세대 나이스 하단 저장/초기화 버튼 (스크린샷 [저장] [닫기]) -->
+          <div class="neis-form-actions">
+            <button type="button" id="btnNeisSave" class="btn-neis-navy">저장</button>
+            <button type="button" id="btnNeisReset" class="btn-neis-white">닫기</button>
           </div>
         </form>
       </section>
@@ -351,6 +440,37 @@
       <p>공식 근거: 「감염병의 예방 및 관리에 관한 법률」(2025.1.1. 기준), 「학교보건법」 제8조, 교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」</p>
       <p class="footer-sub">※ 본 웹앱은 초등학교 보건교사의 신속하고 정확한 법적 결정을 돕기 위한 보조 도구이며, 개별 학생의 상태 및 주치의 소견서에 따라 최종 등교일이 결정됩니다.</p>
     </footer>
+  <!-- [4세대 나이스 학생찾기 모달] -->
+  <div id="studentSearchModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 id="studentModalTitle">🔍 학생 찾기 (나이스 간편 선택)</h3>
+        </div>
+        <button type="button" id="btnCloseStudentModal" class="btn-close" aria-label="닫기">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info-banner">
+          <p class="modal-desc">
+            학생 성명을 직접 입력하시거나, 아래 최근 등록/예시 학생을 클릭하여 학년·반·번호를 한 번에 입력하세요.
+          </p>
+        </div>
+        <div class="form-group" style="margin-top: 0.5rem;">
+          <label for="searchStudentNameInput"><strong>학생 성명 입력 또는 검색</strong></label>
+          <input type="text" id="searchStudentNameInput" placeholder="예: 김민준" />
+        </div>
+        <div class="quick-chips-wrapper" style="margin-top: 0.5rem; flex-direction: column; align-items: flex-start;">
+          <span class="quick-chips-label">원클릭 예시 및 최근 등록 학생:</span>
+          <div id="studentSampleList" class="student-chips-container">
+            <!-- JS 동적 생성 -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnApplyStudentName" class="btn btn-primary">적용하기</button>
+        <button type="button" id="btnCloseStudentModalBtn" class="btn btn-secondary">닫기</button>
+      </div>
+    </div>
   </div>
 
   <!-- 구글 시트 연동 설정 모달 -->

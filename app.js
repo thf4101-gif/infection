@@ -512,6 +512,26 @@
       neisDuty: '보고대상 (즉시보고)'
     },
     {
+      id: 'paratyphoid',
+      name: '파라티푸스 (Paratyphoid Fever)',
+      aliases: ['파라티푸스', 'paratyphoid', '살모넬라파라타이피'],
+      code: 'A01.1-A01.4',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 5,
+      periodDesc: '항생제 치료 종료 48시간 후 24시간 간격 대변배양검사 3회 연속 음성일 때까지',
+      releaseCondition: '대변 배양검사 3회 연속 음성 판정 확인서 제출 시.',
+      legalCriteria: '「감염병예방법」 제41조 제2급 법정감염병 격리 기준 준수',
+      primaryLaw: '「감염병의 예방 및 관리에 관한 법률」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」 수인성·식품매개 감염병 지침',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 「파라티푸스 관리지침」 - 배양검사 3회 음성 시까지 격리',
+      documentReq: '검사결과서 또는 진단서/의사소견서',
+      teacherNotice: '제2급 법정감염병으로 보건소 및 교육지원청 즉시 신고 대상. 급식소 및 화장실 소독 철저.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
       id: 'shigellosis',
       name: '세균성이질 (Shigellosis)',
       aliases: ['세균성이질', '이질', 'shigella', '혈변'],
@@ -596,7 +616,7 @@
       name: '엠폭스 (Mpox)',
       aliases: ['엠폭스', '원숭이두창', 'mpox'],
       code: 'B04',
-      legalGrade: '제3급 법정감염병',
+      legalGrade: '제2급 법정감염병',
       status: 'required',
       statusText: '등교중지 필요',
       defaultDays: 14,
@@ -610,6 +630,1482 @@
       documentReq: '의사 소견서 또는 진단서',
       teacherNotice: '밀접 피부 접촉 차단.',
       neisDuty: '보고대상 (즉시보고)'
+    },
+
+    // ------------------------------------------------------------
+    // [제1급 법정감염병 (17종 전체)] - 음압격리 및 즉시 신고/등교중지
+    // ------------------------------------------------------------
+    {
+      id: 'diphtheria',
+      name: '디프테리아 (Diphtheria)',
+      aliases: ['디프테리아', 'diphtheria', '위막'],
+      code: 'A36',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '항생제 치료 완료 24시간 후 24시간 간격 호흡기 분비물 배양 2회 연속 음성 시까지',
+      releaseCondition: '배양검사 2회 연속 음성 및 전염력 소실 의사 진단서 제출.',
+      legalCriteria: '「감염병예방법」 제41조 제1급 법정감염병 격리 조치 대상',
+      primaryLaw: '「감염병의 예방 및 관리에 관한 법률」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 디프테리아 관리지침',
+      documentReq: '의사 진단서 및 배양검사 음성 결과서',
+      teacherNotice: '제1급 감염병으로 즉시 유선 보고 및 접촉자 예방접종·예방투약 실시.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'mers',
+      name: '중동호흡기증후군 (MERS)',
+      aliases: ['메르스', 'mers', '중동호흡기증후군', '메르스코로나'],
+      code: 'U04.9',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '임상 증상 소실 후 24시간 간격 호흡기 검체 PCR 검사 2회 연속 음성 시까지',
+      releaseCondition: '국가지정 입원치료병상 격리해제 기준 충족 및 PCR 2회 음성 확인.',
+      legalCriteria: '「감염병예방법」 제41조 강제 격리 입원 치료 대상',
+      primaryLaw: '「감염병의 예방 및 관리에 관한 법률」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」 MERS 대응 지침',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 MERS 대응 지침',
+      documentReq: '의사 진단서 및 격리해제 통지서',
+      teacherNotice: '교육지원청 및 보건소 즉시 보고, 학급 밀접접촉자 파악 및 능동감시.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'sars',
+      name: '중증급성호흡기증후군 (SARS)',
+      aliases: ['사스', 'sars', '중증급성호흡기증후군'],
+      code: 'U04.9',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '해열 및 호흡기 증상 완전 소실 후 의료진 격리해제 판정 시까지',
+      releaseCondition: '국가지정 격리병상 퇴원 및 의사의 전염력 소실 진단서 제출.',
+      legalCriteria: '「감염병예방법」 제41조 제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부 학생 감염병 예방 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 SARS 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '제1급 감염병으로 음압격리 대상 및 즉시 보고 필수.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'avian_influenza',
+      name: '동물인플루엔자 인체감염증 (조류독감 인체감염)',
+      aliases: ['조류독감', '동물인플루엔자', 'ai인체감염', 'h5n1', 'h7n9'],
+      code: 'J09',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 10,
+      periodDesc: '증상 소실 후 24시간 간격 PCR 검사 2회 음성 확인 시까지',
+      releaseCondition: '임상 증상 호전 및 바이러스 검사 음성 판정.',
+      legalCriteria: '제1급 법정감염병 격리 기준 준수',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 AI 인체감염증 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '가금류 접촉력 파악 및 즉시 격리/보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'novel_influenza',
+      name: '신종인플루엔자 (Novel Influenza)',
+      aliases: ['신종인플루엔자', '신종플루', 'novel flu'],
+      code: 'J09',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 7,
+      periodDesc: '해열 후 24시간 경과 및 항바이러스제 치료 완료 시까지',
+      releaseCondition: '체온 정상화 및 의사의 등교 가능 소견.',
+      legalCriteria: '제1급 법정감염병 긴급 관리 지침',
+      primaryLaw: '「감염병예방법」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부 학생 감염병 예방 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 신종인플루엔자 관리지침',
+      documentReq: '진료확인서 또는 소견서',
+      teacherNotice: '대유행 대비 학급 위생 및 모니터링 강화.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'ebola',
+      name: '에볼라바이러스병 (Ebola Virus Disease)',
+      aliases: ['에볼라', 'ebola', '에볼라출혈열'],
+      code: 'A98.4',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 21,
+      periodDesc: '임상 증상 소실 및 PCR 검사 음성 확인 후 격리해제 시까지',
+      releaseCondition: '국가지정 입원치료병상 퇴원 기준 충족 확인서.',
+      legalCriteria: '제1급 법정감염병 즉시 격리 대상',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 바이러스성 출혈열 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '치명률이 극도로 높으므로 즉시 신고 및 방역 조치.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'marburg',
+      name: '마버그열 (Marburg Hemorrhagic Fever)',
+      aliases: ['마버그', '마버그열', 'marburg'],
+      code: 'A98.3',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 21,
+      periodDesc: '임상 증상 호전 및 바이러스 음성 확인 시까지',
+      releaseCondition: '의료진 격리해제 통지서 및 진단서 제출.',
+      legalCriteria: '제1급 법정감염병 격리 기준',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 출혈열 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 유선 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'lassa',
+      name: '라싸열 (Lassa Fever)',
+      aliases: ['라싸열', '라싸', 'lassa'],
+      code: 'A96.2',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 21,
+      periodDesc: '급성 증상 소실 및 의사의 완치 판정 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병 격리 대상',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 출혈열 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '보건소 즉시 신고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'cchf',
+      name: '크리미안콩고출혈열 (Crimean-Congo Hemorrhagic Fever)',
+      aliases: ['크리미안콩고', 'cchf', '크리미안콩고출혈열'],
+      code: 'A98.0',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '증상 호전 및 혈액 바이러스 소실 시까지',
+      releaseCondition: '전문의 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고 대상.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'saf',
+      name: '남아메리카출혈열 (South American Hemorrhagic Fever)',
+      aliases: ['남아메리카출혈열', '아르헨티나출혈열', '볼리비아출혈열'],
+      code: 'A96.0',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 21,
+      periodDesc: '격리해제 판정 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'rvf',
+      name: '리프트밸리열 (Rift Valley Fever)',
+      aliases: ['리프트밸리열', 'rvf'],
+      code: 'A92.4',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '완치 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'smallpox',
+      name: '두창 (Smallpox)',
+      aliases: ['두창', '천연두', 'smallpox'],
+      code: 'B03',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 21,
+      periodDesc: '모든 가피가 완전히 탈락할 때까지 격리',
+      releaseCondition: '전신 가피 탈락 및 의사 진단서.',
+      legalCriteria: '제1급 법정감염병 즉시 격리',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 두창 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 국가 방역망 가동 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'plague',
+      name: '페스트 (Plague)',
+      aliases: ['페스트', '흑사병', 'plague'],
+      code: 'A20',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 10,
+      periodDesc: '유효 항생제 투여 후 가래 또는 병변 검사 음성 시까지',
+      releaseCondition: '항생제 투약 완료 및 균 음성 확인 진단서.',
+      legalCriteria: '제1급 법정감염병 격리',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 페스트 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'anthrax',
+      name: '탄저 (Anthrax)',
+      aliases: ['탄저', 'anthrax', '탄저균'],
+      code: 'A22',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '임상 증상 호전 및 치료 완료 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 탄저 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'botulism',
+      name: '보툴리눔독소증 (Botulism)',
+      aliases: ['보툴리눔', '보툴리눔독소증', 'botulism'],
+      code: 'A05.1',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '신경학적 증상 호전 및 일상 학습 가능 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 보툴리눔 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'tularemia',
+      name: '야토병 (Tularemia)',
+      aliases: ['야토병', 'tularemia'],
+      code: 'A21',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '항생제 치료 완료 및 증상 소실 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제1급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 야토병 지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '즉시 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+    {
+      id: 'emerging_infection',
+      name: '신종감염병증후군 (Emerging Infectious Syndrome)',
+      aliases: ['신종감염병증후군', '신종감염병', 'emerging disease'],
+      code: 'U07.9',
+      legalGrade: '제1급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '질병관리청 및 방역당국 역학조사관 지침에 따른 격리해제 시까지',
+      releaseCondition: '보건당국 격리해제 통지서 및 진단서 제출.',
+      legalCriteria: '제1급 법정감염병 긴급 방역 조치 대상',
+      primaryLaw: '「감염병예방법」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부 감염병 위기대응 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 신종감염병 대응 매뉴얼',
+      documentReq: '의사 진단서 또는 격리해제서',
+      teacherNotice: '학교 및 교육지원청 위기대응팀 가동 및 즉시 상황 보고.',
+      neisDuty: '보고대상 (즉시보고)'
+    },
+
+    // ------------------------------------------------------------
+    // [제2급 법정감염병 추가]
+    // ------------------------------------------------------------
+    {
+      id: 'polio',
+      name: '폴리오 (소아마비, Poliomyelitis)',
+      aliases: ['폴리오', '소아마비', 'polio'],
+      code: 'A80',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '분변에서 바이러스 불검출 확인 시까지 (통상 2~4주 격리)',
+      releaseCondition: '바이러스 검사 음성 확인 및 의사 소견서 제출.',
+      legalCriteria: '제2급 법정감염병 격리 기준',
+      primaryLaw: '「감염병예방법」 제41조 및 「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 폴리오 관리지침',
+      documentReq: '의사 소견서 또는 진단서',
+      teacherNotice: '즉시 유선 보고 대상.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'hib',
+      name: 'b형헤모필루스인플루엔자 (Hib)',
+      aliases: ['b형헤모필루스', 'hib', '헤모필루스'],
+      code: 'A41.3 / G00.0',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '적절한 항생제 치료 개시 후 24~48시간까지',
+      releaseCondition: '항생제 치료 후 증상 호전 및 의사 소견.',
+      legalCriteria: '제2급 법정감염병 기준',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 Hib 관리지침',
+      documentReq: '진료확인서 또는 소견서',
+      teacherNotice: '소아 뇌수막염/후두개염 유발 가능. 주의 관찰.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'pneumococcal',
+      name: '폐렴구균 감염증 (Pneumococcal Disease)',
+      aliases: ['폐렴구균', '폐렴사상균', 'streptococcus pneumoniae'],
+      code: 'A40.3 / J13',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '항생제 치료 개시 후 24시간 경과 및 발열 호전 시까지',
+      releaseCondition: '해열 및 호흡기 증상 호전, 의사 소견.',
+      legalCriteria: '제2급 법정감염병 기준',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 폐렴구균 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '침습성 폐렴구균 감염 주의.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'leprosy',
+      name: '한센병 (Leprosy)',
+      aliases: ['한센병', '나병', 'leprosy'],
+      code: 'A30',
+      legalGrade: '제2급 법정감염병',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 7,
+      periodDesc: '다제요법 치료 시작 후 전염력 소실 소견 시까지',
+      releaseCondition: '전문의 소견서 제출 시 즉시 등교 가능.',
+      legalCriteria: '제2급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 한센병 지침',
+      documentReq: '진료확인서 또는 의사소견서',
+      teacherNotice: '치료 시작 즉시 전염력 소실되므로 편견 없는 지도 배려.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'vrsa',
+      name: '반코마이신내성황색포도알균(VRSA) 감염증',
+      aliases: ['vrsa', '반코마이신내성황색포도알균'],
+      code: 'U82.0',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 7,
+      periodDesc: '임상 증상 호전 및 의사의 격리해제 진단 시까지',
+      releaseCondition: '의사 소견서 또는 진단서.',
+      legalCriteria: '제2급 법정감염병 기준',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 다제내성균 지침',
+      documentReq: '의사 소견서',
+      teacherNotice: '철저한 접촉 격리 및 손위생.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'cre',
+      name: '카바페넴내성장내세균목(CRE) 감염증',
+      aliases: ['cre', 'cpe', '카바페넴내성'],
+      code: 'U83.0',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 7,
+      periodDesc: '감염 증상 치료 완료 및 의사의 등교 가능 소견 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제2급 법정감염병 격리 기준',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 CRE 감염증 관리지침',
+      documentReq: '의사 소견서',
+      teacherNotice: '의료기관 내 전파 주의 질환.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'hepatitis_e',
+      name: 'E형간염 (Hepatitis E)',
+      aliases: ['e형간염', '간염e', 'hev'],
+      code: 'B17.2',
+      legalGrade: '제2급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 7,
+      periodDesc: '황달 발현 후 1주일 또는 증상 호전 시까지',
+      releaseCondition: '의사의 등교 가능 소견서 제출.',
+      legalCriteria: '제2급 법정감염병',
+      primaryLaw: '「감염병예방법」 제41조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 E형간염 관리지침',
+      documentReq: '진료확인서 또는 소견서',
+      teacherNotice: '분변-경구 경로 감염 예방 손씻기.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+
+    // ------------------------------------------------------------
+    // [제3급 법정감염병 (26종)]
+    // ------------------------------------------------------------
+    {
+      id: 'tetanus',
+      name: '파상풍 (Tetanus)',
+      aliases: ['파상풍', 'tetanus', '개구장애'],
+      code: 'A35',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '사람 간 전파되지 않으므로 등교중지 불필요 (입원 치료 시 질병결석 처리)',
+      releaseCondition: '임상 증상 호전 및 일상 학습 가능 시.',
+      legalCriteria: '사람 간 전파 없음 (등교중지 비대상)',
+      primaryLaw: '「학교보건법」 (등교중지 비대상)',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '치료 결석 시 일반 질병결석 처리',
+      kdcaGuide: '질병관리청 파상풍 관리지침',
+      documentReq: '진료확인서 (결석 시)',
+      teacherNotice: '상처 소독 및 예방접종 권고.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'hepatitis_b',
+      name: 'B형간염 (Hepatitis B)',
+      aliases: ['b형간염', 'hbv', '간염b'],
+      code: 'B16',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '혈액 및 체액 매개 감염으로 일상 학교생활을 통한 전파 위험 없어 등교중지 불필요',
+      releaseCondition: '급성기 호전 후 일상 등교.',
+      legalCriteria: '등교중지 비대상 (출석 인정 불필요)',
+      primaryLaw: '「학교보건법」 (등교중지 비대상)',
+      manualSource: '교육부 학생 감염병 관리 매뉴얼',
+      attendanceRule: '급성기 입원 결석 시 질병결석 처리',
+      kdcaGuide: '질병관리청 B형간염 관리지침',
+      documentReq: '해당 없음',
+      teacherNotice: '상처 혈액 노출 주의, 식사나 신체 접촉으로 전염되지 않으므로 차별 금지.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'japanese_encephalitis',
+      name: '일본뇌염 (Japanese Encephalitis)',
+      aliases: ['일본뇌염', '뇌염', '작은빨간집모기'],
+      code: 'A83.0',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개 질환으로 사람 간 전파 없어 등교중지 비대상 (치료 후 회복 시 등교)',
+      releaseCondition: '신경학적 회복 및 의사의 학습 가능 소견.',
+      legalCriteria: '사람 간 전염력 없음',
+      primaryLaw: '「학교보건법」 (등교중지 비대상)',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '입원 치료 기간 질병결석 처리',
+      kdcaGuide: '질병관리청 일본뇌염 관리지침',
+      documentReq: '진단서 또는 소견서',
+      teacherNotice: '모기 기피제 사용 및 예방접종 완료 여부 확인.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'hepatitis_c',
+      name: 'C형간염 (Hepatitis C)',
+      aliases: ['c형간염', 'hcv', '간염c'],
+      code: 'B18.2',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '혈액 매개 감염으로 일상 학교생활 등교 가능 (등교중지 불필요)',
+      releaseCondition: '일상 등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '해당 없음',
+      kdcaGuide: '질병관리청 C형간염 관리지침',
+      documentReq: '해당 없음',
+      teacherNotice: '상처 출혈 시 처치 철저.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'malaria',
+      name: '말라리아 (Malaria)',
+      aliases: ['말라리아', '학질', '얼룩날개모기'],
+      code: 'B50-B54',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개 질환으로 사람 간 직접 전파 없음 (해열 및 컨디션 회복 후 등교)',
+      releaseCondition: '발열 호전 및 의사의 등교 가능 소견.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '결석 시 일반 질병결석 처리',
+      kdcaGuide: '질병관리청 말라리아 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '모기 기피제 사용 및 환기창 방충망 점검.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'legionella',
+      name: '레지오넬라증 (Legionellosis)',
+      aliases: ['레지오넬라', '레지오넬라증', '냉방병'],
+      code: 'A48.1',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '냉각탑수 흡입 매개로 사람 간 전파 없음 (증상 회복 후 등교)',
+      releaseCondition: '체온 정상화 및 호흡기 증상 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 레지오넬라증 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '학교 냉난방 수처리 및 청소 점검.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'vibrio_vulnificus',
+      name: '비브리오패혈증 (Vibrio vulnificus Sepsis)',
+      aliases: ['비브리오패혈증', '비브리오', '어패류패혈증'],
+      code: 'A54.4',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '어패류 섭취 또는 상처 바닷물 접촉 매개로 사람 간 전파 없음',
+      releaseCondition: '의사의 완치 판정 시.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 비브리오패혈증 관리지침',
+      documentReq: '진단서',
+      teacherNotice: '해산물 익혀 먹기 및 피부 상처 시 바닷물 접촉 금지 안내.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'tsutsugamushi',
+      name: '쯔쯔가무시증 (Scrub Typhus)',
+      aliases: ['쯔쯔가무시', '털진드기', '가피'],
+      code: 'A75.3',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '털진드기 유충 매개로 사람 간 전파 없음 (항생제 치료 및 해열 후 등교)',
+      releaseCondition: '해열 및 전신 증상 회복 시.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 쯔쯔가무시증 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '가을철 야외학습 시 긴옷 착용 및 돗자리 사용 지도.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'leptospirosis',
+      name: '렙토스피라증 (Leptospirosis)',
+      aliases: ['렙토스피라', 'leptospira'],
+      code: 'A27',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '동물 소변 오염 매개로 사람 간 전파 없음 (치료 후 회복 시 등교)',
+      releaseCondition: '체온 정상화 및 의사 소견.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '수해 지역 오염된 물 접촉 피하기.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'brucellosis',
+      name: '브루셀라증 (Brucellosis)',
+      aliases: ['브루셀라', 'brucella'],
+      code: 'A23',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '살균 안 된 유제품 섭취 등 매개, 사람 간 전파 극히 희박',
+      releaseCondition: '치료 후 증상 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '유제품 섭취 주의.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'rabies',
+      name: '공수병 / 광견병 (Rabies)',
+      aliases: ['공수병', '광견병', 'rabies'],
+      code: 'A82',
+      legalGrade: '제3급 법정감염병',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 14,
+      periodDesc: '전문 의료기관 입원 치료 및 완치 시까지',
+      releaseCondition: '의사 진단서 제출.',
+      legalCriteria: '제3급 법정감염병',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 공수병 관리지침',
+      documentReq: '의사 진단서',
+      teacherNotice: '야생동물에 물렸을 경우 즉시 상처 세척 및 백신 접종.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'hfrs',
+      name: '신증후군출혈열 (Hemorrhagic Fever with Renal Syndrome)',
+      aliases: ['신증후군출혈열', '유행성출혈열', '한타바이러스'],
+      code: 'A98.5',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '설치류 배설물 매개로 사람 간 전파 없음 (치료 후 회복 시 등교)',
+      releaseCondition: '신기능 정상화 및 의사 소견.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 신증후군출혈열 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '야외활동 시 풀밭에 눕지 않기.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'cjd',
+      name: '크로이츠펠트-야콥병 (CJD)',
+      aliases: ['cjd', '크로이츠펠트야콥병', '프리온'],
+      code: 'A81.0',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '일상 접촉으로 전파되지 않음',
+      releaseCondition: '해당 없음.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '해당 없음',
+      kdcaGuide: '질병관리청 CJD 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '특이 접촉 없음.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'yellow_fever',
+      name: '황열 (Yellow Fever)',
+      aliases: ['황열', 'yellow fever'],
+      code: 'A95',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개 질환으로 사람 간 전파 없음',
+      releaseCondition: '의사의 완치 판정.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '해외 유입 모니터링.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'dengue',
+      name: '뎅기열 (Dengue Fever)',
+      aliases: ['뎅기열', 'dengue'],
+      code: 'A90',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개 질환으로 사람 간 전파 없음 (해열 후 등교)',
+      releaseCondition: '체온 정상화 및 전신 상태 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 뎅기열 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '해외 여행력 확인 및 모기 기피.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'q_fever',
+      name: '큐열 (Q Fever)',
+      aliases: ['큐열', 'q fever'],
+      code: 'A78',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '가축 접촉 매개로 사람 간 전파 극히 희박',
+      releaseCondition: '증상 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 큐열 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '주의 관찰.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'west_nile',
+      name: '웨스트나일열 (West Nile Fever)',
+      aliases: ['웨스트나일', 'west nile'],
+      code: 'A92.3',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개로 사람 간 전파 없음',
+      releaseCondition: '회복 시 등교.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '모기 방제.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'lyme',
+      name: '라임병 (Lyme Disease)',
+      aliases: ['라임병', 'lyme', '유주성홍반'],
+      code: 'A69.2',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '진드기 매개로 사람 간 전파 없음 (항생제 치료 중 정상 등교 가능)',
+      releaseCondition: '일상 등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 라임병 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '야외활동 시 진드기 물림 주의.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'tick_borne_encephalitis',
+      name: '진드기매개뇌염 (Tick-borne Encephalitis)',
+      aliases: ['진드기매개뇌염', 'tbe'],
+      code: 'A84',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '진드기 매개로 사람 간 전파 없음',
+      releaseCondition: '회복 후 등교.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진단서',
+      teacherNotice: '진드기 기피제 사용.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'melioidosis',
+      name: '유비저 (Melioidosis)',
+      aliases: ['유비저', 'melioidosis'],
+      code: 'A24.1',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '오염된 토양/물 매개로 사람 간 전파 극히 희박',
+      releaseCondition: '치료 후 증상 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 유비저 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '피부 상처 관리.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'chikungunya',
+      name: '치쿤구니야열 (Chikungunya Fever)',
+      aliases: ['치쿤구니야', '치쿤구니야열'],
+      code: 'A92.0',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개로 사람 간 전파 없음 (통증 완화 후 등교)',
+      releaseCondition: '발열 및 관절통 호전.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '모기 회피.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'sfts',
+      name: '중증열성혈소판감소증후군 (SFTS)',
+      aliases: ['sfts', '중증열성혈소판감소증후군', '살인진드기', '소참진드기'],
+      code: 'A93.8',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '진드기 매개로 사람 간 일상 전파 없음 (단, 중증 치료 후 회복 시 등교)',
+      releaseCondition: '혈액 수치 정상화 및 전문의 등교 가능 소견.',
+      legalCriteria: '등교중지 비대상 (체액 직접 접촉 주의)',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '입원 기간 질병결석 처리',
+      kdcaGuide: '질병관리청 SFTS 관리지침',
+      documentReq: '진단서 또는 소견서',
+      teacherNotice: '치명률이 높으므로 혈액/체액 접촉 주의 및 야외 진드기 예방 수칙 준수.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'zika',
+      name: '지카바이러스감염증 (Zika Virus Infection)',
+      aliases: ['지카', '지카바이러스', 'zika'],
+      code: 'A92.5',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '모기 매개 질환으로 일상 학교생활을 통한 전파 없음',
+      releaseCondition: '증상 호전 시 등교.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지카바이러스 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '모기 기피제 사용.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'epidemic_typhus',
+      name: '발진티푸스 (Epidemic Typhus)',
+      aliases: ['발진티푸스', '몸이'],
+      code: 'A75.0',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '몸이 매개로 사람 간 직접 전파 없음 (치료 후 등교)',
+      releaseCondition: '치료 완료 및 의사 소견.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '개인 위생 지도.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+    {
+      id: 'murine_typhus',
+      name: '발진열 (Murine Typhus)',
+      aliases: ['발진열', '벼룩'],
+      code: 'A75.2',
+      legalGrade: '제3급 법정감염병',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '쥐벼룩 매개로 사람 간 전파 없음',
+      releaseCondition: '치료 완료.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '환경 위생 점검.',
+      neisDuty: '보고대상 (24시간 이내)'
+    },
+
+    // ------------------------------------------------------------
+    // [제4급 법정감염병 추가 (표본감시 질환)]
+    // ------------------------------------------------------------
+    {
+      id: 'chlamydia_pneumoniae',
+      name: '클라미디아 폐렴균 감염증',
+      aliases: ['클라미디아', '클라미디아폐렴', 'chlamydia pneumoniae'],
+      code: 'J16.0 / A49.8',
+      legalGrade: '제4급 법정감염병 (급성호흡기감염증)',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 5,
+      periodDesc: '발열 호전 및 기침 증상이 가라앉을 때까지',
+      releaseCondition: '항생제 치료 및 증상 호전 의사 소견 시.',
+      legalCriteria: '교육부 급성호흡기감염증 지침 출석인정 결석 대상',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 학생 감염병 관리 지침',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 호흡기 감염병 관리지침',
+      documentReq: '진료확인서',
+      teacherNotice: '장기 기침 시 마스크 착용 지도.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'human_coronavirus',
+      name: '사람 코로나바이러스 감염증 (일반 코로나)',
+      aliases: ['사람코로나', '일반코로나', 'human coronavirus'],
+      code: 'B34.2',
+      legalGrade: '제4급 법정감염병 (급성호흡기감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '일반 감기 원인 바이러스로 등교중지 대상 아님 (고열 시 휴식)',
+      releaseCondition: '정상 체온 회복 시.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '질병결석 처리',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '해당 없음',
+      teacherNotice: 'COVID-19와 다른 단순 감기 바이러스임.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'campylobacter',
+      name: '캄필로박터균 감염증 (장관감염증)',
+      aliases: ['캄필로박터', 'campylobacter', '닭고기식중독'],
+      code: 'A04.5',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '설사 및 복통 등 급성 증상 소실 후 48시간까지',
+      releaseCondition: '배변 정상화 및 의사 소견.',
+      legalCriteria: '학교 급식 및 수인성 감염병 예방 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 수인성·식품매개 감염병 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '생닭 세척 시 교차오염 주의 안내.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'vibrio_parahaemolyticus',
+      name: '장염비브리오균 감염증 (장관감염증)',
+      aliases: ['장염비브리오', 'vibrio parahaemolyticus'],
+      code: 'A04.8',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '설사 및 구토 증상 소실 후 48시간까지',
+      releaseCondition: '증상 소실 확인.',
+      legalCriteria: '식중독 예방 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '해산물 섭취력 확인.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'clostridium_perfringens',
+      name: '클로스트리듐 퍼프린젠스 감염증 (장관감염증)',
+      aliases: ['퍼프린젠스', '클로스트리듐'],
+      code: 'A04.8',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '설사 및 복통 소실 후 24~48시간까지',
+      releaseCondition: '증상 호전.',
+      legalCriteria: '식중독 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '집단 급식 배식 후 관리 점검.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'staphylococcus_aureus_enteritis',
+      name: '황색포도알균 감염증 (장관감염증)',
+      aliases: ['황색포도알균', '포도상구균장염'],
+      code: 'A04.8',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '구토 및 설사 증상 소실 후 24시간까지',
+      releaseCondition: '증상 소실.',
+      legalCriteria: '식품위생 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '손 상처 조리 식품 주의.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'etec',
+      name: '장독소성대장균(ETEC) 감염증 (장관감염증)',
+      aliases: ['etec', '장독소성대장균', '여행자설사'],
+      code: 'A04.1',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '수양성 설사 멈춘 후 48시간까지',
+      releaseCondition: '배변 정상화.',
+      legalCriteria: '수인성 감염병 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '물 끓여 마시기 지도.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'epec',
+      name: '장병원성대장균(EPEC) 감염증 (장관감염증)',
+      aliases: ['epec', '장병원성대장균'],
+      code: 'A04.0',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '설사 및 발열 소실 후 48시간까지',
+      releaseCondition: '임상 증상 호전.',
+      legalCriteria: '감염병 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '배변 후 손씻기 지도.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'eiec',
+      name: '장침습성대장균(EIEC) 감염증 (장관감염증)',
+      aliases: ['eiec', '장침습성대장균'],
+      code: 'A04.2',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '발열 및 혈변 등 증상 소실 후 48시간까지',
+      releaseCondition: '증상 호전.',
+      legalCriteria: '감염병 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '철저한 손위생.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'astrovirus',
+      name: '아스트로바이러스 감염증 (장관감염증)',
+      aliases: ['아스트로', '아스트로바이러스'],
+      code: 'A08.3',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '설사 멈춘 후 48시간까지',
+      releaseCondition: '증상 소실.',
+      legalCriteria: '감염병 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '화장실 소독.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'sapovirus',
+      name: '사포바이러스 감염증 (장관감염증)',
+      aliases: ['사포', '사포바이러스'],
+      code: 'A08.3',
+      legalGrade: '제4급 법정감염병 (장관감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 2,
+      periodDesc: '구토 및 설사 소실 후 48시간까지',
+      releaseCondition: '증상 소실.',
+      legalCriteria: '감염병 관리 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '소독 철저.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'amoebiasis',
+      name: '이질아메바증 (Amebiasis)',
+      aliases: ['이질아메바', '아메바성이질'],
+      code: 'A06',
+      legalGrade: '제4급 법정감염병 (기생충·원충)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '항원충제 치료 완료 및 증상 소실 시까지',
+      releaseCondition: '의사 소견서 제출.',
+      legalCriteria: '법정감염병 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '위생 점검.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'giardiasis',
+      name: '람블편모충증 (Giardiasis)',
+      aliases: ['람블편모충', '편모충'],
+      code: 'A07.1',
+      legalGrade: '제4급 법정감염병 (원충감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '설사 증상 소실 및 치료 완료 시까지',
+      releaseCondition: '의사 소견.',
+      legalCriteria: '감염병 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '음용수 안전 관리.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'cryptosporidiosis',
+      name: '크립토스포리디움증 (Cryptosporidiosis)',
+      aliases: ['크립토스포리디움', '와포자충'],
+      code: 'A07.2',
+      legalGrade: '제4급 법정감염병 (원충감염증)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 3,
+      periodDesc: '설사 멈춘 후 48시간까지',
+      releaseCondition: '증상 호전.',
+      legalCriteria: '감염병 지침',
+      primaryLaw: '「학교보건법」 제8조',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '수영장 물 접촉 주의.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'syphilis',
+      name: '매독 (Syphilis)',
+      aliases: ['매독', 'syphilis', '트레포네마'],
+      code: 'A51-A53',
+      legalGrade: '제4급 법정감염병 (표본감시)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '일상적인 학교생활 접촉으로 전파되지 않음',
+      releaseCondition: '일상 등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '해당 없음',
+      kdcaGuide: '질병관리청 매독 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '비밀 보장 및 편견 방지.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'ascariasis',
+      name: '회충증 (Ascariasis)',
+      aliases: ['회충', '회충증', 'ascaris'],
+      code: 'B77',
+      legalGrade: '제4급 법정감염병 (기생충감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '구충제 복용 후 정상 등교 (등교중지 불필요)',
+      releaseCondition: '치료약제 복용 후 즉시 등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 기생충 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '채소류 씻어 먹기 및 손씻기.',
+      neisDuty: '해당없음'
+    },
+    {
+      id: 'trichuriasis',
+      name: '편충증 (Trichuriasis)',
+      aliases: ['편충', '편충증'],
+      code: 'B79',
+      legalGrade: '제4급 법정감염병 (기생충감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '구충제 복용 후 정상 등교 가능',
+      releaseCondition: '투약 후 등교.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 기생충 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '위생 교육.',
+      neisDuty: '해당없음'
+    },
+    {
+      id: 'clonorchiasis',
+      name: '간흡충증 (Clonorchiasis)',
+      aliases: ['간흡충', '간디스토마'],
+      code: 'B66.1',
+      legalGrade: '제4급 법정감염병 (기생충감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '민물고기 생식 매개로 사람 간 전파 없음 (등교 가능)',
+      releaseCondition: '치료약 복용 중 등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 기생충 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '민물고기 익혀 먹기 안내.',
+      neisDuty: '해당없음'
+    },
+    {
+      id: 'paragonimiasis',
+      name: '폐흡충증 (Paragonimiasis)',
+      aliases: ['폐흡충', '폐디스토마'],
+      code: 'B66.4',
+      legalGrade: '제4급 법정감염병 (기생충감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '민물 게/가재 생식 매개로 사람 간 전파 없음',
+      releaseCondition: '등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 기생충 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '민물 갑각류 익혀 먹기.',
+      neisDuty: '해당없음'
+    },
+    {
+      id: 'fasciolopsiasis',
+      name: '장흡충증 (Fasciolopsiasis)',
+      aliases: ['장흡충', '흡충증'],
+      code: 'B66.5',
+      legalGrade: '제4급 법정감염병 (기생충감염증)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '사람 간 전파 없음 (등교 가능)',
+      releaseCondition: '등교 가능.',
+      legalCriteria: '등교중지 비대상',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: '정상 등교',
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '해당 없음',
+      teacherNotice: '위생 지도.',
+      neisDuty: '해당없음'
+    },
+    {
+      id: 'vre',
+      name: '반코마이신내성장알균(VRE) 감염증',
+      aliases: ['vre', '반코마이신내성장알균'],
+      code: 'U82.1',
+      legalGrade: '제4급 법정감염병 (표본감시)',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 5,
+      periodDesc: '급성 감염 증상 호전 시까지',
+      releaseCondition: '의사 소견.',
+      legalCriteria: '의료관련 감염병 지침',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '접촉 주의 및 손위생.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'mrsa',
+      name: '메티실린내성황색포도알균(MRSA) 감염증',
+      aliases: ['mrsa', '메티실린내성'],
+      code: 'U82.2',
+      legalGrade: '제4급 법정감염병 (표본감시)',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 3,
+      periodDesc: '피부 상처 병변의 삼출액이 멈추거나 밀폐 드레싱 완료 시까지',
+      releaseCondition: '병변 피복 및 의사 소견.',
+      legalCriteria: '의료관련 감염병 지침',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '상처 부위 밴드 피복 지도.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'mrpa',
+      name: '다제내성녹농균(MRPA) 감염증',
+      aliases: ['mrpa', '다제내성녹농균'],
+      code: 'U83.1',
+      legalGrade: '제4급 법정감염병 (표본감시)',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 3,
+      periodDesc: '증상 호전 시까지',
+      releaseCondition: '의사 소견.',
+      legalCriteria: '의료관련 감염병 지침',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '위생 지도.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'mrab',
+      name: '다제내성아시네토바커균(MRAB) 감염증',
+      aliases: ['mrab', '다제내성아시네토바커'],
+      code: 'U83.2',
+      legalGrade: '제4급 법정감염병 (표본감시)',
+      status: 'recommended',
+      statusText: '등교중지 권고',
+      defaultDays: 3,
+      periodDesc: '증상 호전 시까지',
+      releaseCondition: '의사 소견.',
+      legalCriteria: '의료관련 감염병 지침',
+      primaryLaw: '「학교보건법」',
+      manualSource: '교육부 감염병 매뉴얼',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 지침',
+      documentReq: '진료확인서',
+      teacherNotice: '손소독 지도.',
+      neisDuty: '보고대상'
     },
 
     // ------------------------------------------------------------
@@ -653,6 +2149,46 @@
       kdcaGuide: '질병관리청 안과 지침',
       documentReq: '안과 진료확인서',
       teacherNotice: '손위생 철저, 손잡이 및 책상 소독 실시.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'meningitis',
+      name: '뇌수막염 (Meningitis)',
+      aliases: ['뇌수막염', '수막염', 'meningitis'],
+      code: 'G03',
+      legalGrade: '비법정 감염병 (학교보건 관리 대상)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 7,
+      periodDesc: '발열, 두통, 구토 등 급성 증상이 소실되고 의사의 등교 가능 진단이 있을 때까지',
+      releaseCondition: '증상 호전 및 전염력 소실에 관한 의사의 진단서(소견서) 제출 시.',
+      legalCriteria: '「학교보건법」 제8조 및 교육부 학생 감염병 관리 지침 출석인정 결석 대상',
+      primaryLaw: '「학교보건법」 제8조(등교중지)',
+      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 뇌수막염 관리지침',
+      documentReq: '진료확인서 또는 의사소견서/진단서',
+      teacherNotice: '급성기 안정 가료 필요. 원인균/바이러스 감별 및 건강 상태 추적 관찰.',
+      neisDuty: '보고대상'
+    },
+    {
+      id: 'aseptic_meningitis',
+      name: '무균성수막염 (Aseptic Meningitis / 바이러스 수막염)',
+      aliases: ['무균성수막염', '무균성뇌수막염', '바이러스뇌수막염', 'aseptic'],
+      code: 'A87',
+      legalGrade: '비법정 감염병 (학교보건 관리 대상)',
+      status: 'required',
+      statusText: '등교중지 필요',
+      defaultDays: 5,
+      periodDesc: '발열, 두통, 구토 증상이 완전히 호전될 때까지 (통상 5~7일간)',
+      releaseCondition: '해열 및 전신 증상 회복 후 의사의 등교 가능 소견 시.',
+      legalCriteria: '「학교보건법」 제8조 및 교육부 학생 감염병 예방 관리 지침 기준',
+      primaryLaw: '「학교보건법」 제8조(등교중지)',
+      manualSource: '교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」',
+      attendanceRule: COMMON_ATTENDANCE_RULE,
+      kdcaGuide: '질병관리청 엔테로바이러스/무균성수막염 관리지침',
+      documentReq: '진료확인서 또는 의사소견서',
+      teacherNotice: '엔테로바이러스 등이 주원인. 배변 후 손씻기 지도 및 개인 물품 분리 사용.',
       neisDuty: '보고대상'
     },
     {
@@ -782,12 +2318,33 @@
     inputName: document.getElementById('inputName'),
     inputGender: document.getElementById('inputGender'),
     inputSymptomDate: document.getElementById('inputSymptomDate'),
+    inputTreatmentStatus: document.getElementById('inputTreatmentStatus'),
     inputHospitalized: document.getElementById('inputHospitalized'),
+    inputDiseaseCategory: document.getElementById('inputDiseaseCategory'),
+    inputDiseaseSelect: document.getElementById('inputDiseaseSelect'),
+    inputCustomDisease: document.getElementById('inputCustomDisease'),
+    inputDiscoveryRoute: document.getElementById('inputDiscoveryRoute'),
+    inputSuspensionStatus: document.getElementById('inputSuspensionStatus'),
+    inputConfirmedStatus: document.getElementById('inputConfirmedStatus'),
     inputSymptoms: document.getElementById('inputSymptoms'),
+    inputRemarks: document.getElementById('inputRemarks'),
     inputSuspendStartDate: document.getElementById('inputSuspendStartDate'),
     inputReturnDate: document.getElementById('inputReturnDate'),
     inputNeisReported: document.getElementById('inputNeisReported'),
     studentRecordForm: document.getElementById('studentRecordForm'),
+
+    btnFindStudent: document.getElementById('btnFindStudent'),
+    btnNeisSave: document.getElementById('btnNeisSave'),
+    btnNeisReset: document.getElementById('btnNeisReset'),
+    btnToggleNeisNotice: document.getElementById('btnToggleNeisNotice'),
+    neisNoticeBanner: document.getElementById('neisNoticeBanner'),
+
+    studentSearchModal: document.getElementById('studentSearchModal'),
+    btnCloseStudentModal: document.getElementById('btnCloseStudentModal'),
+    btnCloseStudentModalBtn: document.getElementById('btnCloseStudentModalBtn'),
+    btnApplyStudentName: document.getElementById('btnApplyStudentName'),
+    searchStudentNameInput: document.getElementById('searchStudentNameInput'),
+    studentSampleList: document.getElementById('studentSampleList'),
 
     selectedDiseaseBadge: document.getElementById('selectedDiseaseBadge'),
     decisionBasisEmpty: document.getElementById('decisionBasisEmpty'),
@@ -898,6 +2455,7 @@
       elements.inputSuspendStartDate.value = todayStr;
     }
 
+    initNeisDiseaseOptions();
     updateSheetBadge();
 
     // 2025 법정감염병 기준 초등학교 다빈도 10대 감염병 칩 (아데노바이러스 포함!)
@@ -1036,8 +2594,245 @@
   }
 
   /* ============================================================
-     7. 질병 선택 및 화면 갱신
+     7. 4세대 나이스 병명 연계 및 질병 선택 갱신
   ============================================================ */
+  // 붉은색 표기 대상 감염병 (홍역, 결핵, 장출혈성대장균감염증, A형간염, 장티푸스, 파라티푸스, 세균성이질, 콜레라)
+  const RED_DISEASE_IDS = new Set([
+    'measles',        // 홍역
+    'tuberculosis',    // 결핵
+    'ehec',           // 장출혈성대장균감염증
+    'hepatitis_a',    // A형간염
+    'typhoid',        // 장티푸스
+    'paratyphoid',    // 파라티푸스
+    'shigellosis',    // 세균성이질
+    'cholera'         // 콜레라
+  ]);
+
+  // 법정 감염병 우선순위 목록 (질병관리청 KDCA 공식 법정감염병 전체 수록 및 그림 화면 image_68b42ef0.png 순서 최우선 배치)
+  const LEGAL_PRIORITY_ORDER = [
+    // 1) 그림 파일(image_68b42ef0.png) 상단에 표시된 9대 감염병 순서 (최우선 배치)
+    { id: 'influenza', label: '인플루엔자' },
+    { id: 'measles', label: '홍역', isRed: true },
+    { id: 'varicella', label: '수두' },
+    { id: 'tuberculosis', label: '결핵', isRed: true },
+    { id: 'mumps', label: '유행성이하선염' },
+    { id: 'pertussis', label: '백일해' },
+    { id: 'scarlet_fever', label: '성홍열' },
+    { id: 'hfmd', label: '수족구병' },
+    { id: 'covid19', label: '코로나바이러스감염증-19' },
+
+    // 2) 사용자 요청 붉은색 표기 법정 감염병 (홍역, 결핵 외 6종)
+    { id: 'ehec', label: '장출혈성대장균감염증', isRed: true },
+    { id: 'hepatitis_a', label: 'A형간염', isRed: true },
+    { id: 'typhoid', label: '장티푸스', isRed: true },
+    { id: 'paratyphoid', label: '파라티푸스', isRed: true },
+    { id: 'shigellosis', label: '세균성이질', isRed: true },
+    { id: 'cholera', label: '콜레라', isRed: true },
+
+    // 3) 학교보건 다빈도 법정감염병 (호흡기/장관)
+    { id: 'mycoplasma', label: '마이코플라스마 폐렴균 감염증' },
+    { id: 'adenovirus', label: '아데노바이러스 감염증' },
+    { id: 'rsv', label: '호흡기세포융합바이러스 감염증 (RSV)' },
+    { id: 'norovirus', label: '노로바이러스 감염증' },
+    { id: 'rotavirus', label: '로타바이러스 감염증' },
+    { id: 'salmonella', label: '살모넬라균 감염증' },
+    { id: 'enterovirus', label: '엔테로바이러스 감염증' },
+    { id: 'parainfluenza', label: '파라인플루엔자바이러스 감염증' },
+    { id: 'hmpv', label: '사람 메타뉴모바이러스 감염증' },
+    { id: 'bocavirus', label: '사람 보카바이러스 감염증' },
+    { id: 'rhinovirus', label: '리노바이러스 감염증' },
+    { id: 'chlamydia_pneumoniae', label: '클라미디아 폐렴균 감염증' },
+    { id: 'human_coronavirus', label: '사람 코로나바이러스 감염증' },
+
+    // 4) 제1급 법정감염병 (17종 - 음압격리 및 즉시신고)
+    { id: 'diphtheria', label: '디프테리아' },
+    { id: 'mers', label: '중동호흡기증후군 (MERS)' },
+    { id: 'sars', label: '중증급성호흡기증후군 (SARS)' },
+    { id: 'avian_influenza', label: '동물인플루엔자 인체감염증' },
+    { id: 'novel_influenza', label: '신종인플루엔자' },
+    { id: 'ebola', label: '에볼라바이러스병' },
+    { id: 'marburg', label: '마버그열' },
+    { id: 'lassa', label: '라싸열' },
+    { id: 'cchf', label: '크리미안콩고출혈열' },
+    { id: 'saf', label: '남아메리카출혈열' },
+    { id: 'rvf', label: '리프트밸리열' },
+    { id: 'smallpox', label: '두창' },
+    { id: 'plague', label: '페스트' },
+    { id: 'anthrax', label: '탄저' },
+    { id: 'botulism', label: '보툴리눔독소증' },
+    { id: 'tularemia', label: '야토병' },
+    { id: 'emerging_infection', label: '신종감염병증후군' },
+
+    // 5) 제2급 법정감염병 추가 (격리 필요)
+    { id: 'rubella', label: '풍진' },
+    { id: 'polio', label: '폴리오' },
+    { id: 'meningococcal', label: '수막구균 감염증' },
+    { id: 'hib', label: 'b형헤모필루스인플루엔자' },
+    { id: 'pneumococcal', label: '폐렴구균 감염증' },
+    { id: 'leprosy', label: '한센병' },
+    { id: 'vrsa', label: '반코마이신내성황색포도알균(VRSA) 감염증' },
+    { id: 'cre', label: '카바페넴내성장내세균목(CRE) 감염증' },
+    { id: 'hepatitis_e', label: 'E형간염' },
+    { id: 'mpox', label: '엠폭스' },
+
+    // 6) 제3급 법정감염병 (26종 - 발생감시)
+    { id: 'tetanus', label: '파상풍' },
+    { id: 'hepatitis_b', label: 'B형간염' },
+    { id: 'japanese_encephalitis', label: '일본뇌염' },
+    { id: 'hepatitis_c', label: 'C형간염' },
+    { id: 'malaria', label: '말라리아' },
+    { id: 'legionella', label: '레지오넬라증' },
+    { id: 'vibrio_vulnificus', label: '비브리오패혈증' },
+    { id: 'tsutsugamushi', label: '쯔쯔가무시증' },
+    { id: 'leptospirosis', label: '렙토스피라증' },
+    { id: 'brucellosis', label: '브루셀라증' },
+    { id: 'rabies', label: '공수병' },
+    { id: 'hfrs', label: '신증후군출혈열' },
+    { id: 'cjd', label: '크로이츠펠트-야콥병(CJD)' },
+    { id: 'yellow_fever', label: '황열' },
+    { id: 'dengue', label: '뎅기열' },
+    { id: 'q_fever', label: '큐열' },
+    { id: 'west_nile', label: '웨스트나일열' },
+    { id: 'lyme', label: '라임병' },
+    { id: 'tick_borne_encephalitis', label: '진드기매개뇌염' },
+    { id: 'melioidosis', label: '유비저' },
+    { id: 'chikungunya', label: '치쿤구니야열' },
+    { id: 'sfts', label: '중증열성혈소판감소증후군(SFTS)' },
+    { id: 'zika', label: '지카바이러스감염증' },
+    { id: 'epidemic_typhus', label: '발진티푸스' },
+    { id: 'murine_typhus', label: '발진열' },
+
+    // 7) 제4급 법정감염병 추가 (장관감염증, 기생충, 매독, 항생제 내성균)
+    { id: 'campylobacter', label: '캄필로박터균 감염증' },
+    { id: 'vibrio_parahaemolyticus', label: '장염비브리오균 감염증' },
+    { id: 'clostridium_perfringens', label: '클로스트리듐 퍼프린젠스 감염증' },
+    { id: 'staphylococcus_aureus_enteritis', label: '황색포도알균 감염증' },
+    { id: 'etec', label: '장독소성대장균(ETEC) 감염증' },
+    { id: 'epec', label: '장병원성대장균(EPEC) 감염증' },
+    { id: 'eiec', label: '장침습성대장균(EIEC) 감염증' },
+    { id: 'astrovirus', label: '아스트로바이러스 감염증' },
+    { id: 'sapovirus', label: '사포바이러스 감염증' },
+    { id: 'amoebiasis', label: '이질아메바증' },
+    { id: 'giardiasis', label: '람블편모충증' },
+    { id: 'cryptosporidiosis', label: '크립토스포리디움증' },
+    { id: 'syphilis', label: '매독' },
+    { id: 'enterobiasis', label: '요충증' },
+    { id: 'ascariasis', label: '회충증' },
+    { id: 'trichuriasis', label: '편충증' },
+    { id: 'clonorchiasis', label: '간흡충증' },
+    { id: 'paragonimiasis', label: '폐흡충증' },
+    { id: 'fasciolopsiasis', label: '장흡충증' },
+    { id: 'vre', label: '반코마이신내성장알균(VRE) 감염증' },
+    { id: 'mrsa', label: '메티실린내성황색포도알균(MRSA) 감염증' },
+    { id: 'mrpa', label: '다제내성녹농균(MRPA) 감염증' },
+    { id: 'mrab', label: '다제내성아시네토바커균(MRAB) 감염증' }
+  ];
+
+  // 비법정 감염병 우선순위 목록 (그림 화면 image_efff343b.png 순서 일치)
+  const NON_LEGAL_PRIORITY_ORDER = [
+    { id: 'ekc', label: '유행성각결막염' },
+    { id: 'ahc', label: '급성출혈성결막염' },
+    { id: 'meningitis', label: '뇌수막염' },
+    { id: 'aseptic_meningitis', label: '무균성수막염' },
+    { id: 'scabies', label: '옴' },
+    { id: 'custom_non_legal', label: '기타(비법정)' },
+    { id: 'impetigo', label: '농가진' },
+    { id: 'head_lice', label: '머릿이' },
+    { id: 'common_cold', label: '일반 감기 / 급성 비인두염' },
+    { id: 'allergic_rhinitis', label: '알레르기 비염 / 결막염 / 아토피' }
+  ];
+
+  function updateSelectColor(select) {
+    if (!select) return;
+    const val = select.value;
+    if (RED_DISEASE_IDS.has(val)) {
+      select.classList.add('is-red-disease');
+      select.style.color = '#dc2626';
+      select.style.fontWeight = '700';
+    } else {
+      select.classList.remove('is-red-disease');
+      select.style.color = '';
+      select.style.fontWeight = '';
+    }
+  }
+
+  function initNeisDiseaseOptions() {
+    if (!elements.inputDiseaseCategory || !elements.inputDiseaseSelect) return;
+    const cat = elements.inputDiseaseCategory.value; // '법정' or '비법정'
+    const select = elements.inputDiseaseSelect;
+    select.innerHTML = '<option value="">선택</option>';
+
+    if (cat === '법정') {
+      const addedIds = new Set();
+
+      LEGAL_PRIORITY_ORDER.forEach(item => {
+        const d = DISEASE_DATABASE.find(x => x.id === item.id);
+        if (d) {
+          addedIds.add(d.id);
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = item.label;
+          if (item.isRed || RED_DISEASE_IDS.has(d.id)) {
+            opt.classList.add('opt-danger-red');
+            opt.style.color = '#dc2626';
+            opt.style.fontWeight = '700';
+          }
+          select.appendChild(opt);
+        }
+      });
+
+      DISEASE_DATABASE.filter(d => d.legalGrade.includes('법정') && !addedIds.has(d.id)).forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.textContent = d.name.split(' (')[0];
+        if (RED_DISEASE_IDS.has(d.id)) {
+          opt.classList.add('opt-danger-red');
+          opt.style.color = '#dc2626';
+          opt.style.fontWeight = '700';
+        }
+        select.appendChild(opt);
+      });
+
+      const optEtc = document.createElement('option');
+      optEtc.value = 'custom_legal';
+      optEtc.textContent = '기타(법정)';
+      select.appendChild(optEtc);
+
+    } else {
+      const addedIds = new Set();
+
+      NON_LEGAL_PRIORITY_ORDER.forEach(item => {
+        if (item.id === 'custom_non_legal') {
+          const optEtc = document.createElement('option');
+          optEtc.value = 'custom_non_legal';
+          optEtc.textContent = '기타(비법정)';
+          select.appendChild(optEtc);
+          return;
+        }
+        const d = DISEASE_DATABASE.find(x => x.id === item.id);
+        if (d) {
+          addedIds.add(d.id);
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.textContent = item.label;
+          select.appendChild(opt);
+        }
+      });
+
+      DISEASE_DATABASE.filter(d => !d.legalGrade.includes('법정') && !addedIds.has(d.id)).forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.textContent = d.name.split(' (')[0];
+        select.appendChild(opt);
+      });
+    }
+
+    if (STATE.selectedDisease) {
+      select.value = STATE.selectedDisease.id;
+    }
+    updateSelectColor(select);
+  }
+
   function selectDisease(item) {
     STATE.selectedDisease = item;
     elements.diseaseSearchInput.value = item.name;
@@ -1060,6 +2855,32 @@
     elements.basisReleaseCondition.textContent = item.releaseCondition;
     elements.basisDocumentReq.textContent = item.documentReq;
     elements.basisTeacherNotice.textContent = item.teacherNotice;
+
+    // 4세대 나이스 병명 선택창 동기화
+    if (elements.inputDiseaseCategory && elements.inputDiseaseSelect) {
+      const isLegal = item.legalGrade.includes('법정');
+      elements.inputDiseaseCategory.value = isLegal ? '법정' : '비법정';
+      initNeisDiseaseOptions();
+      elements.inputDiseaseSelect.value = item.id;
+      updateSelectColor(elements.inputDiseaseSelect);
+      if (elements.inputCustomDisease) {
+        elements.inputCustomDisease.classList.add('hidden');
+      }
+    }
+
+    // 4세대 나이스 등교중지여부 자동 선택 (그림 화면 기준: '등교' / '등교중지')
+    if (elements.inputSuspensionStatus) {
+      if (item.status === 'none') {
+        elements.inputSuspensionStatus.value = '등교';
+      } else {
+        elements.inputSuspensionStatus.value = '등교중지';
+      }
+    }
+
+    // [사용자 요청] 참고사항 안내 문구: "환자의 치료현황 변경시 입력.\n증빙서류 제출 여부 입력"
+    if (elements.inputRemarks) {
+      elements.inputRemarks.placeholder = '환자의 치료현황 변경시 입력.\n증빙서류 제출 여부 입력';
+    }
 
     if (item.neisDuty && item.neisDuty.includes('해당없음')) {
       elements.inputNeisReported.value = '해당없음(비보고대상)';
@@ -1175,9 +2996,18 @@
     const suspendStartDate = elements.inputSuspendStartDate ? elements.inputSuspendStartDate.value.trim() : symptomDate;
     const returnDate = elements.inputReturnDate.value.trim();
     const symptoms = elements.inputSymptoms.value.trim();
-    const hospitalized = elements.inputHospitalized.value.trim();
     const neisReported = elements.inputNeisReported.value.trim();
-    const diseaseName = STATE.selectedDisease ? STATE.selectedDisease.name : elements.diseaseSearchInput.value.trim();
+    let diseaseName = STATE.selectedDisease ? STATE.selectedDisease.name : elements.diseaseSearchInput.value.trim();
+    if (elements.inputCustomDisease && !elements.inputCustomDisease.classList.contains('hidden') && elements.inputCustomDisease.value.trim()) {
+      diseaseName = elements.inputCustomDisease.value.trim();
+    }
+
+    const treatmentStatus = elements.inputTreatmentStatus ? elements.inputTreatmentStatus.value : '통원치료';
+    const hospitalized = (treatmentStatus === '입원') ? '예' : (elements.inputHospitalized ? elements.inputHospitalized.value : '아니오');
+    const discoveryRoute = elements.inputDiscoveryRoute ? elements.inputDiscoveryRoute.value : '개인진료';
+    const suspensionStatus = elements.inputSuspensionStatus ? elements.inputSuspensionStatus.value : '등교중지';
+    const confirmedStatus = elements.inputConfirmedStatus ? elements.inputConfirmedStatus.value : '확진';
+    const remarks = elements.inputRemarks ? elements.inputRemarks.value.trim() : '';
 
     if (!grade) {
       showToast('⚠️ 학년을 선택해주세요.');
@@ -1200,12 +3030,12 @@
       return null;
     }
     if (!diseaseName) {
-      showToast('⚠️ 질병을 먼저 검색하고 선택해주세요.');
+      showToast('⚠️ 질병을 먼저 검색하거나 병명을 선택해주세요.');
       elements.diseaseSearchInput.focus();
       return null;
     }
     if (!symptomDate) {
-      showToast('⚠️ 증상 발생 일자를 입력해주세요.');
+      showToast('⚠️ 발생인지일(증상 발생일)을 입력해주세요.');
       elements.inputSymptomDate.focus();
       return null;
     }
@@ -1234,6 +3064,12 @@
       returnDate: returnDate,
       symptoms: symptoms || '특이사항 없음',
       hospitalized: hospitalized,
+      treatmentStatus: treatmentStatus,
+      discoveryRoute: discoveryRoute,
+      suspensionStatus: suspensionStatus,
+      confirmedStatus: confirmedStatus,
+      remarks: remarks,
+      note: remarks || (hospitalized === '예' ? '병원입원' : '통원치료'),
       neisReported: neisReported,
       timestamp: new Date().toISOString()
     };
@@ -1288,7 +3124,12 @@
         returnDate: record.returnDate,
         symptoms: record.symptoms,
         hospitalized: record.hospitalized,
-        note: record.hospitalized === '예' ? '병원입원' : '자가격리',
+        treatmentStatus: record.treatmentStatus,
+        discoveryRoute: record.discoveryRoute,
+        suspensionStatus: record.suspensionStatus,
+        confirmedStatus: record.confirmedStatus,
+        remarks: record.remarks,
+        note: record.remarks || (record.hospitalized === '예' ? '병원입원' : '통원치료'),
         neisReported: record.neisReported,
         reportDate: formatDate(new Date())
       }
@@ -1530,9 +3371,92 @@
     elements.decisionStatusPill.className = 'decision-pill status-ready';
     elements.decisionSummaryText.textContent = '질병명과 증상 발생 일자를 입력하시면 공식 매뉴얼 기준의 정확한 등교중지 필요 여부와 권고 기간이 산출됩니다.';
 
+    if (elements.inputDiseaseCategory) elements.inputDiseaseCategory.value = '법정';
+    initNeisDiseaseOptions();
+    if (elements.inputCustomDisease) elements.inputCustomDisease.classList.add('hidden');
+    if (elements.inputTreatmentStatus) elements.inputTreatmentStatus.value = '통원치료';
+    if (elements.inputHospitalized) elements.inputHospitalized.value = '아니오';
+    if (elements.inputDiscoveryRoute) elements.inputDiscoveryRoute.value = '개인진료';
+    if (elements.inputSuspensionStatus) elements.inputSuspensionStatus.value = '등교중지';
+    if (elements.inputConfirmedStatus) elements.inputConfirmedStatus.value = '확진';
+    if (elements.inputRemarks) {
+      elements.inputRemarks.value = '';
+      elements.inputRemarks.placeholder = '환자의 치료현황 변경시 입력.\n증빙서류 제출 여부 입력';
+    }
+    if (elements.inputNeisReported) elements.inputNeisReported.value = '미보고';
+
     document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
 
     showToast('새로운 학생 입력을 위해 초기화되었습니다.');
+  }
+
+  /* ============================================================
+     10-1. 4세대 나이스 학생 찾기 모달
+  ============================================================ */
+  const SAMPLE_STUDENTS = [
+    { grade: '1학년', class: '2반', number: '5', name: '김민준', gender: '남' },
+    { grade: '2학년', class: '3반', number: '14', name: '이서아', gender: '여' },
+    { grade: '3학년', class: '1반', number: '22', name: '박도윤', gender: '남' },
+    { grade: '4학년', class: '4반', number: '8', name: '최지우', gender: '여' },
+    { grade: '5학년', class: '2반', number: '17', name: '정예준', gender: '남' },
+    { grade: '6학년', class: '5반', number: '11', name: '한소율', gender: '여' }
+  ];
+
+  function openStudentModal() {
+    if (!elements.studentSearchModal) return;
+    if (elements.searchStudentNameInput) {
+      elements.searchStudentNameInput.value = elements.inputName.value || '';
+    }
+    renderStudentSampleList();
+    elements.studentSearchModal.classList.remove('hidden');
+    if (elements.searchStudentNameInput) {
+      elements.searchStudentNameInput.focus();
+    }
+  }
+
+  function closeStudentModal() {
+    if (elements.studentSearchModal) {
+      elements.studentSearchModal.classList.add('hidden');
+    }
+  }
+
+  function applyStudentData(stu) {
+    if (stu.name) elements.inputName.value = stu.name;
+    if (stu.grade) elements.inputGrade.value = stu.grade;
+    if (stu.class) elements.inputClass.value = stu.class;
+    if (stu.number) elements.inputNumber.value = stu.number;
+    if (stu.gender) elements.inputGender.value = stu.gender;
+    closeStudentModal();
+    showToast(`👤 '${stu.name}' (${stu.grade} ${stu.class}) 학생 정보가 입력되었습니다.`);
+  }
+
+  function renderStudentSampleList() {
+    if (!elements.studentSampleList) return;
+    elements.studentSampleList.innerHTML = '';
+
+    const recentList = (STATE.history || []).slice(0, 4).map(h => ({
+      grade: h.grade,
+      class: h.class,
+      number: h.number || '',
+      name: h.name,
+      gender: h.gender || '남'
+    }));
+
+    const listToRender = [...recentList];
+    SAMPLE_STUDENTS.forEach(sample => {
+      if (!listToRender.some(item => item.name === sample.name)) {
+        listToRender.push(sample);
+      }
+    });
+
+    listToRender.forEach(stu => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'student-chip-btn';
+      btn.innerHTML = `<strong>${stu.name}</strong> <span class="meta">${stu.grade} ${stu.class}${stu.number ? ' ' + stu.number + '번' : ''} (${stu.gender})</span>`;
+      btn.addEventListener('click', () => applyStudentData(stu));
+      elements.studentSampleList.appendChild(btn);
+    });
   }
 
   /* ============================================================
@@ -1858,11 +3782,100 @@
       });
     }
 
-    // 7. ESC 키로 모든 팝업 모달 닫기
+    // 8. 4세대 나이스(NEIS) 폼 이벤트
+    if (elements.btnNeisSave) {
+      elements.btnNeisSave.addEventListener('click', handleSaveToSheet);
+    }
+    if (elements.btnNeisReset) {
+      elements.btnNeisReset.addEventListener('click', handleResetForm);
+    }
+    if (elements.btnFindStudent) {
+      elements.btnFindStudent.addEventListener('click', openStudentModal);
+    }
+    if (elements.btnToggleNeisNotice && elements.neisNoticeBanner) {
+      elements.btnToggleNeisNotice.addEventListener('click', () => {
+        const isCollapsed = elements.neisNoticeBanner.classList.toggle('collapsed');
+        elements.btnToggleNeisNotice.textContent = isCollapsed ? '▼' : '▲';
+      });
+    }
+
+    if (elements.inputDiseaseCategory) {
+      elements.inputDiseaseCategory.addEventListener('change', () => {
+        initNeisDiseaseOptions();
+        if (elements.inputCustomDisease) {
+          elements.inputCustomDisease.classList.add('hidden');
+        }
+      });
+    }
+
+    if (elements.inputDiseaseSelect) {
+      elements.inputDiseaseSelect.addEventListener('change', () => {
+        const val = elements.inputDiseaseSelect.value;
+        if (val === 'custom_legal' || val === 'custom_non_legal') {
+          if (elements.inputCustomDisease) {
+            elements.inputCustomDisease.classList.remove('hidden');
+            elements.inputCustomDisease.focus();
+          }
+          return;
+        }
+        if (elements.inputCustomDisease) {
+          elements.inputCustomDisease.classList.add('hidden');
+        }
+        if (val) {
+          const match = DISEASE_DATABASE.find(d => d.id === val);
+          if (match) {
+            selectDisease(match);
+          }
+        }
+      });
+    }
+
+    if (elements.inputTreatmentStatus) {
+      elements.inputTreatmentStatus.addEventListener('change', () => {
+        const val = elements.inputTreatmentStatus.value;
+        if (elements.inputHospitalized) {
+          elements.inputHospitalized.value = val.includes('입원') ? '예' : '아니오';
+        }
+      });
+    }
+
+    // 9. 학생 찾기 모달 이벤트
+    if (elements.btnCloseStudentModal) {
+      elements.btnCloseStudentModal.addEventListener('click', closeStudentModal);
+    }
+    if (elements.btnCloseStudentModalBtn) {
+      elements.btnCloseStudentModalBtn.addEventListener('click', closeStudentModal);
+    }
+    if (elements.studentSearchModal) {
+      elements.studentSearchModal.addEventListener('click', (e) => {
+        if (e.target === elements.studentSearchModal) closeStudentModal();
+      });
+    }
+    if (elements.btnApplyStudentName) {
+      elements.btnApplyStudentName.addEventListener('click', () => {
+        const query = elements.searchStudentNameInput ? elements.searchStudentNameInput.value.trim() : '';
+        if (query) {
+          elements.inputName.value = query;
+          showToast(`👤 성명 '${query}'이(가) 입력되었습니다.`);
+        }
+        closeStudentModal();
+      });
+    }
+    if (elements.searchStudentNameInput) {
+      elements.searchStudentNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (elements.btnApplyStudentName) elements.btnApplyStudentName.click();
+        }
+      });
+    }
+
+    // 10. ESC 키로 모든 팝업 모달 닫기
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeNoticeModal();
         closeSheetModal();
+        closeStudentModal();
       }
     });
   }
@@ -1960,13 +3973,16 @@ function doPost(e) {
     if (colMap.name) sheet.getRange(targetRow, colMap.name).setValue(sanitize(rec.name));
     if (colMap.gender) sheet.getRange(targetRow, colMap.gender).setValue(sanitize(rec.gender));
     if (colMap.symptomDate) sheet.getRange(targetRow, colMap.symptomDate).setValue(sanitize(rec.symptomDate));
-    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.hospitalized));
+    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.treatmentStatus || rec.hospitalized));
+    if (colMap.discoveryRoute && rec.discoveryRoute) sheet.getRange(targetRow, colMap.discoveryRoute).setValue(sanitize(rec.discoveryRoute));
+    if (colMap.suspensionStatus && rec.suspensionStatus) sheet.getRange(targetRow, colMap.suspensionStatus).setValue(sanitize(rec.suspensionStatus));
+    if (colMap.confirmedStatus && rec.confirmedStatus) sheet.getRange(targetRow, colMap.confirmedStatus).setValue(sanitize(rec.confirmedStatus));
     if (colMap.symptoms) sheet.getRange(targetRow, colMap.symptoms).setValue(sanitize(rec.symptoms || "특이사항 없음"));
     if (colMap.suspendPeriod) sheet.getRange(targetRow, colMap.suspendPeriod).setValue(sanitize(rec.suspendPeriod));
     if (colMap.returnDate) sheet.getRange(targetRow, colMap.returnDate).setValue(sanitize(rec.returnDate));
     if (colMap.neisReported) sheet.getRange(targetRow, colMap.neisReported).setValue(sanitize(rec.neisReported || "미보고"));
     if (colMap.reportDate) sheet.getRange(targetRow, colMap.reportDate).setValue(sanitize(rec.reportDate || Utilities.formatDate(new Date(), "GMT+9", "yyyy-MM-dd")));
-    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
+    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.remarks || rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
 
     // 시트 세로 가운데 정렬 적용
     sheet.getRange(targetRow, 1, 1, maxCols).setVerticalAlignment("middle");
@@ -2065,21 +4081,27 @@ function buildColumnMapping(headers) {
       map.name = col;
     } else if (raw.includes("성별") || raw === "성") {
       map.gender = col;
-    } else if (raw.includes("발생") || raw.includes("발견") || raw.includes("발병") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
+    } else if (raw.includes("발생인지") || raw.includes("발생일") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
       map.symptomDate = col;
-    } else if (raw.includes("입원")) {
+    } else if (raw.includes("치료") || raw.includes("입원")) {
       map.hospitalized = col;
+    } else if (raw.includes("발견") || raw.includes("경위")) {
+      map.discoveryRoute = col;
+    } else if (raw.includes("확진") || raw.includes("진단")) {
+      map.confirmedStatus = col;
     } else if (raw.includes("주증상") || (raw.includes("증상") && !raw.includes("일자") && !raw.includes("일"))) {
       map.symptoms = col;
+    } else if (raw.includes("중지여부") || (raw.includes("등교중지") && raw.includes("여부"))) {
+      map.suspensionStatus = col;
     } else if (raw.includes("중지") || raw.includes("격리") || (raw.includes("출석인정") && raw.includes("기간"))) {
       map.suspendPeriod = col;
-    } else if (raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
+    } else if (raw.includes("완치") || raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
       map.returnDate = col;
     } else if (raw.includes("나이스") || (raw.includes("보고") && raw.includes("여부"))) {
       map.neisReported = col;
     } else if (raw.includes("보고일") || raw.includes("등록일") || raw.includes("작성일")) {
       map.reportDate = col;
-    } else if (raw.includes("비고") || raw.includes("특이사항") || raw.includes("참고")) {
+    } else if (raw.includes("참고") || raw.includes("비고") || raw.includes("특이사항")) {
       map.note = col;
     }
   }

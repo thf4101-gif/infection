@@ -90,13 +90,16 @@ function doPost(e) {
     if (colMap.name) sheet.getRange(targetRow, colMap.name).setValue(sanitize(rec.name));
     if (colMap.gender) sheet.getRange(targetRow, colMap.gender).setValue(sanitize(rec.gender));
     if (colMap.symptomDate) sheet.getRange(targetRow, colMap.symptomDate).setValue(sanitize(rec.symptomDate));
-    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.hospitalized));
+    if (colMap.hospitalized) sheet.getRange(targetRow, colMap.hospitalized).setValue(sanitize(rec.treatmentStatus || rec.hospitalized));
+    if (colMap.discoveryRoute && rec.discoveryRoute) sheet.getRange(targetRow, colMap.discoveryRoute).setValue(sanitize(rec.discoveryRoute));
+    if (colMap.suspensionStatus && rec.suspensionStatus) sheet.getRange(targetRow, colMap.suspensionStatus).setValue(sanitize(rec.suspensionStatus));
+    if (colMap.confirmedStatus && rec.confirmedStatus) sheet.getRange(targetRow, colMap.confirmedStatus).setValue(sanitize(rec.confirmedStatus));
     if (colMap.symptoms) sheet.getRange(targetRow, colMap.symptoms).setValue(sanitize(rec.symptoms || "특이사항 없음"));
     if (colMap.suspendPeriod) sheet.getRange(targetRow, colMap.suspendPeriod).setValue(sanitize(rec.suspendPeriod));
     if (colMap.returnDate) sheet.getRange(targetRow, colMap.returnDate).setValue(sanitize(rec.returnDate));
     if (colMap.neisReported) sheet.getRange(targetRow, colMap.neisReported).setValue(sanitize(rec.neisReported || "미보고"));
     if (colMap.reportDate) sheet.getRange(targetRow, colMap.reportDate).setValue(sanitize(rec.reportDate || Utilities.formatDate(new Date(), "GMT+9", "yyyy-MM-dd")));
-    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
+    if (colMap.note) sheet.getRange(targetRow, colMap.note).setValue(sanitize(rec.remarks || rec.note || (rec.hospitalized === "예" ? "병원입원" : "자가격리")));
 
     // 시트 세로 가운데 정렬 적용
     sheet.getRange(targetRow, 1, 1, maxCols).setVerticalAlignment("middle");
@@ -195,21 +198,27 @@ function buildColumnMapping(headers) {
       map.name = col;
     } else if (raw.includes("성별") || raw === "성") {
       map.gender = col;
-    } else if (raw.includes("발생") || raw.includes("발견") || raw.includes("발병") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
+    } else if (raw.includes("발생인지") || raw.includes("발생일") || (raw.includes("증상") && (raw.includes("일자") || raw.includes("일")))) {
       map.symptomDate = col;
-    } else if (raw.includes("입원")) {
+    } else if (raw.includes("치료") || raw.includes("입원")) {
       map.hospitalized = col;
+    } else if (raw.includes("발견") || raw.includes("경위")) {
+      map.discoveryRoute = col;
+    } else if (raw.includes("확진") || raw.includes("진단")) {
+      map.confirmedStatus = col;
     } else if (raw.includes("주증상") || (raw.includes("증상") && !raw.includes("일자") && !raw.includes("일"))) {
       map.symptoms = col;
+    } else if (raw.includes("중지여부") || (raw.includes("등교중지") && raw.includes("여부"))) {
+      map.suspensionStatus = col;
     } else if (raw.includes("중지") || raw.includes("격리") || (raw.includes("출석인정") && raw.includes("기간"))) {
       map.suspendPeriod = col;
-    } else if (raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
+    } else if (raw.includes("완치") || raw.includes("등교일") || raw.includes("등교예정") || raw.includes("등교가능")) {
       map.returnDate = col;
     } else if (raw.includes("나이스") || (raw.includes("보고") && raw.includes("여부"))) {
       map.neisReported = col;
     } else if (raw.includes("보고일") || raw.includes("등록일") || raw.includes("작성일")) {
       map.reportDate = col;
-    } else if (raw.includes("비고") || raw.includes("특이사항") || raw.includes("참고")) {
+    } else if (raw.includes("참고") || raw.includes("비고") || raw.includes("특이사항")) {
       map.note = col;
     }
   }

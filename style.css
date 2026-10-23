@@ -485,7 +485,366 @@ body.school-theme {
   font-weight: 700;
 }
 
-/* 폼 스타일 */
+/* 4세대 나이스(NEIS) 감염병환자등록 전용 스타일 */
+.bar-neis {
+  background: #1e3a8a;
+}
+
+.neis-card {
+  padding: 1.1rem 1.25rem 1.3rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+
+.neis-card-header {
+  border-bottom: 2px solid #1e3a8a;
+  padding-bottom: 0.65rem;
+}
+
+.neis-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.neis-title-group h2 {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.neis-capsule-icon {
+  color: #2563eb;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.tag-neis {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+
+.neis-win-tools {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.btn-win-tool {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 0.8rem;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-win-tool:hover {
+  background: #f1f5f9;
+  color: #1e3a8a;
+}
+
+/* 나이스 상단 안내문구 */
+.neis-notice-wrap {
+  margin: 0.45rem 0 0.65rem 0;
+}
+
+.neis-notice-banner {
+  font-size: 0.81rem;
+  color: #c0264b;
+  line-height: 1.55;
+  transition: all 0.2s ease;
+}
+
+.neis-notice-banner.collapsed {
+  display: none;
+}
+
+.neis-notice-banner p {
+  margin: 0 0 0.2rem 0;
+}
+
+.neis-toggle-bar {
+  position: relative;
+  height: 12px;
+  border-bottom: 1px solid #cbd5e1;
+  margin-top: 0.2rem;
+  margin-bottom: 0.6rem;
+}
+
+.btn-neis-toggle {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  background-color: #1e3a8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 2px;
+  width: 42px;
+  height: 18px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.btn-neis-toggle:hover {
+  background-color: #2563eb;
+}
+
+/* 나이스 테이블 본문 */
+.neis-form-wrap {
+  width: 100%;
+}
+
+.neis-form-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid #1e3a8a;
+  border-bottom: 1px solid #94a3b8;
+  font-size: 0.84rem;
+  background-color: #ffffff;
+}
+
+.neis-form-table tr {
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.neis-form-table th,
+.neis-form-table td {
+  border: 1px solid #cbd5e1;
+  padding: 0.35rem 0.5rem;
+  vertical-align: middle;
+}
+
+.neis-form-table th.th-req {
+  background-color: #fde8ed;
+  color: #be123c;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.84rem;
+}
+
+.neis-form-table th.th-opt {
+  background-color: #eff4f9;
+  color: #1e3a8a;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.84rem;
+}
+
+.neis-form-table th .ast {
+  color: #dc2626;
+  font-weight: 800;
+  margin-right: 0.15rem;
+}
+
+.neis-form-table input[type="text"],
+.neis-form-table input[type="number"],
+.neis-form-table input[type="date"],
+.neis-form-table select {
+  padding: 0.25rem 0.45rem;
+  height: 30px;
+  font-size: 0.84rem;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  background-color: #ffffff;
+  color: #1e293b;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.neis-form-table input:focus,
+.neis-form-table select:focus,
+.neis-form-table textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.neis-select-full {
+  width: 100%;
+}
+
+/* 셀 내부 정렬 */
+.neis-name-cell {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.btn-neis-blue {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 2px;
+  height: 30px;
+  padding: 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.btn-neis-blue:hover {
+  background-color: #1d4ed8;
+}
+
+.neis-class-cell {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr 1fr;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.neis-disease-cell {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  width: 100%;
+}
+
+.select-category {
+  width: 95px !important;
+  flex-shrink: 0;
+}
+
+.select-disease-list {
+  flex: 1;
+}
+
+/* 나이스 법정감염병 붉은색 표기 (홍역, 결핵, 장출혈성대장균감염증, A형간염, 장티푸스, 파라티푸스, 세균성이질, 콜레라) */
+select.select-disease-list option.opt-danger-red,
+.select-disease-list option.opt-danger-red,
+option.opt-danger-red {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+select.select-disease-list.is-red-disease {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+  border-color: #ef4444 !important;
+}
+
+.input-custom-disease {
+  flex: 1;
+}
+
+.neis-textarea {
+  width: 100%;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.84rem;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+/* 나이스 하단 저장/초기화 버튼 */
+.neis-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-bottom: 0.15rem;
+}
+
+.btn-neis-navy {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 2px;
+  height: 32px;
+  min-width: 68px;
+  padding: 0 1.2rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-neis-navy:hover {
+  background-color: #172554;
+}
+
+.btn-neis-white {
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  height: 32px;
+  min-width: 68px;
+  padding: 0 1.2rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-neis-white:hover {
+  background-color: #f8fafc;
+  border-color: #64748b;
+}
+
+/* 학생 찾기 모달용 스타일 */
+.student-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+}
+
+.student-chip-btn {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.7rem;
+  border-radius: 2px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.student-chip-btn:hover {
+  background-color: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+.student-chip-btn .meta {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+/* 기존 폼 그리드 호환 */
 .form-grid {
   display: flex;
   flex-direction: column;
