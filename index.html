@@ -559,15 +559,18 @@
             <li>
               <span class="step-num">1</span>
               <div>
-                <strong>[가장 중요한 원인] 액세스 권한 설정:</strong><br />
-                학교/교육청 구글 계정으로 배포할 때 [액세스 권한이 있는 사용자]가 기본값인 '조직 내 사용자'나 '나만'으로 되어 있으면 외부 전송이 100% 차단됩니다. 반드시 <strong>「모든 사용자(Anyone)」</strong>로 설정하셔야 합니다.
+                <strong>[가장 빈번한 원인] 배포 실행자 및 액세스 권한 설정:</strong><br />
+                학교/교육청 구글 계정으로 웹 앱을 배포할 때 아래 2가지 설정이 일치하지 않으면 외부 전송이 100% 차단됩니다.<br />
+                • <strong>다음 사용자로 실행:</strong> 반드시 <strong>「나(내 계정 / User managing the script)」</strong>로 설정 ('웹 앱에 액세스하는 사용자' 선택 시 인증 오류 발생)<br />
+                • <strong>액세스할 수 있는 사용자:</strong> 반드시 <strong>「모든 사용자(Anyone)」</strong>로 설정 (기본값인 '내 조직' 또는 '나만'으로 두면 외부 전송 차단)
               </div>
             </li>
             <li>
               <span class="step-num">2</span>
               <div>
-                <strong>[코드 수정 후 필수] 새 버전으로 배포하기:</strong><br />
-                <code>Code.gs</code> 코드를 새로 붙여넣고 저장(💾)만 누르면 웹 앱에는 옛날 코드가 동작합니다. 반드시 상단 <strong>[배포] → [배포 관리] → ✏️수정(연필 아이콘) → 버전: [새 버전(New Version)] 선택 → [배포]</strong>를 눌러주셔야 합니다.
+                <strong>[코드 복사 후 필수] [새 버전]으로 배포하기:</strong><br />
+                <code>Code.gs</code> 소스코드를 새로 붙여넣고 저장(💾)만 누르면 웹 앱에는 이전 코드가 계속 동작합니다!<br />
+                반드시 Apps Script 창 우측 상단 <strong>[배포] → [배포 관리] → ✏️수정(연필 아이콘) → 버전: [새 버전(New Version)] 선택 → 하단 [배포]</strong>를 눌러주셔야 수정된 최신 코드가 웹 앱에 즉시 적용됩니다.
               </div>
             </li>
             <li>
@@ -581,7 +584,7 @@
               <span class="step-num">4</span>
               <div>
                 <strong>열 제목(1행) 확인:</strong><br />
-                나이스 기준에 따라 열 순서를 자유롭게 바꾸셔도 되지만, 1행의 제목에 <code>연번</code>, <code>질환명</code>, <code>학년</code>, <code>반</code>, <code>번호</code>, <code>성명</code>, <code>성별</code>, <code>발생일</code> 등의 단어가 포함되어 있어야 해당 열을 자동 인식합니다.
+                나이스 기준에 따라 열 순서를 자유롭게 바꾸셔도 되지만, 1행의 제목에 <code>연번</code>, <code>질환명</code>, <code>학년</code>, <code>반</code>, <code>번호</code>, <code>성명</code>, <code>성별</code>, <code>발생일</code> 등의 단어가 포함되어 있어야 해당 열을 자동 인식합니다. (빈 시트인 경우 15개 열 헤더를 자동 생성합니다)
               </div>
             </li>
           </ul>
