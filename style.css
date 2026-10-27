@@ -687,35 +687,213 @@ body.school-theme {
 
 /* 셀 내부 정렬 */
 .neis-name-cell {
-  display: flex;
-  gap: 0.35rem;
-  align-items: center;
+  width: 100%;
 }
 
-.btn-neis-blue {
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 2px;
-  height: 30px;
-  padding: 0 0.75rem;
-  font-size: 0.8rem;
+.input-name-full {
+  width: 100% !important;
   font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease;
-}
-
-.btn-neis-blue:hover {
-  background-color: #1d4ed8;
+  color: #1e3a8a !important;
+  font-size: 0.92rem !important;
 }
 
 .neis-class-cell {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr 1fr;
-  gap: 0.25rem;
+  display: flex;
+  gap: 0.35rem;
   align-items: center;
+  width: 100%;
+}
+
+.student-input-subcell {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.student-input-subcell.grade-subcell {
+  flex: 1.25;
+}
+
+.student-input-subcell.class-subcell {
+  flex: 1;
+}
+
+.student-input-subcell.num-subcell {
+  flex: 1;
+}
+
+.student-input-subcell.gender-subcell {
+  flex: 0.95;
+}
+
+.student-input-subcell select,
+.student-input-subcell input {
+  height: 30px;
+  font-size: 0.88rem !important;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.student-input-subcell .unit-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* 실시간 학생 인적사항 확인 바 */
+.tr-student-live-preview {
+  background-color: #f8fafc;
+}
+
+.td-student-live-preview {
+  padding: 0.35rem 0.5rem !important;
+  border-top: 1px dashed #cbd5e1 !important;
+}
+
+.student-live-confirm-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.65rem;
+  background: linear-gradient(90deg, #f0f7ff 0%, #f8fafc 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  min-height: 34px;
+}
+
+.live-confirm-badge {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #1e40af;
+  background-color: #dbeafe;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  white-space: nowrap;
+  border: 1px solid #93c5fd;
+  flex-shrink: 0;
+}
+
+.live-chips-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.live-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.live-chip.chip-grade {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.live-chip.chip-class {
+  background-color: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.live-chip.chip-number {
+  background-color: #faf5ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+}
+
+.live-chip.chip-gender.is-male {
+  background-color: #ecfeff;
+  color: #0e7490;
+  border: 1px solid #a5f3fc;
+}
+
+.live-chip.chip-gender.is-female {
+  background-color: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+.live-chip.chip-name {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-size: 0.88rem;
+  padding: 0.15rem 0.55rem;
+}
+
+.live-chip-empty {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  background-color: #f1f5f9;
+  border: 1px dashed #cbd5e1;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.live-chip-badge-ok {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #ffffff;
+  background-color: #15803d;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  margin-left: 0.25rem;
+}
+
+.live-placeholder-hint {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* 개인정보 보호 안내 스타일 */
+.privacy-guarantee-note {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #0284c7;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.privacy-note-icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.privacy-shield-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #0369a1;
+  background-color: #e0f2fe;
+  border: 1px solid #bae6fd;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  margin-left: 0.6rem;
+}
+
+.history-privacy-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0.25rem 0 0.6rem 0;
+  line-height: 1.4;
 }
 
 .neis-disease-cell {

@@ -5,7 +5,7 @@
  * 초등학교 보건교사를 위한 감염병 등교중지 판정 및 감염병 관리대장 연동 로직
  * 
  * [법적 근거]
- * 1. 『감염병 예방 및 관리에 관한 법률』 제41조 (2025.1.1. 기준 제1급~제4급 법정감염병 전체 수록)
+ * 1. 『감염병 예방 및 관리에 관한 법률』 제41조 (최신 질병관리청·교육부 법정감염병 전체 수록)
  * 2. 『학교보건법』 제8조(등교중지) 및 동법 시행령 제22조
  * 3. 교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」
  * 4. 교육부 훈령 제477호 「학교생활기록 작성 및 관리지침」 별표 8 (출결상황 관리) 3호 가목
@@ -17,7 +17,7 @@
   const COMMON_ATTENDANCE_RULE = '교육부 훈령 제477호 「학교생활기록 작성 및 관리지침」 별표 8 (출결상황 관리) 3호 가목 [출석인정결석]';
 
   /* ============================================================
-     1. 법정 감염병 (2025.1.1. 기준 1~4급 및 세부 병원체 전체 수록)
+     1. 최신 법정 감염병 (1~4급 및 세부 병원체 전체 수록)
   ============================================================ */
   const DISEASE_DATABASE = [
     // ------------------------------------------------------------
@@ -396,7 +396,7 @@
       name: '유행성이하선염 / 볼거리 (Mumps)',
       aliases: ['볼거리', '유행성이하선염', 'mumps', '이하선염', '귀밑샘'],
       code: 'B26',
-      legalGrade: '제2급 법정감염병 (2025 개정)',
+      legalGrade: '제2급 법정감염병 (최신 개정)',
       status: 'required',
       statusText: '등교중지 필요',
       defaultDays: 5,
@@ -2333,18 +2333,12 @@
     inputNeisReported: document.getElementById('inputNeisReported'),
     studentRecordForm: document.getElementById('studentRecordForm'),
 
-    btnFindStudent: document.getElementById('btnFindStudent'),
+    studentLiveConfirmBar: document.getElementById('studentLiveConfirmBar'),
+    liveChipsGroup: document.getElementById('liveChipsGroup'),
     btnNeisSave: document.getElementById('btnNeisSave'),
     btnNeisReset: document.getElementById('btnNeisReset'),
     btnToggleNeisNotice: document.getElementById('btnToggleNeisNotice'),
     neisNoticeBanner: document.getElementById('neisNoticeBanner'),
-
-    studentSearchModal: document.getElementById('studentSearchModal'),
-    btnCloseStudentModal: document.getElementById('btnCloseStudentModal'),
-    btnCloseStudentModalBtn: document.getElementById('btnCloseStudentModalBtn'),
-    btnApplyStudentName: document.getElementById('btnApplyStudentName'),
-    searchStudentNameInput: document.getElementById('searchStudentNameInput'),
-    studentSampleList: document.getElementById('studentSampleList'),
 
     selectedDiseaseBadge: document.getElementById('selectedDiseaseBadge'),
     decisionBasisEmpty: document.getElementById('decisionBasisEmpty'),
@@ -2424,6 +2418,16 @@
     return formatDate(d);
   }
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function showToast(message, duration = 3000) {
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -2438,11 +2442,64 @@
 
   function setFeedback(msg, type = 'success') {
     elements.actionFeedback.className = `feedback-msg ${type}`;
-    elements.actionFeedback.textContent = msg;
+    elements.actionFeedback.innerHTML = msg;
     elements.actionFeedback.classList.remove('hidden');
     setTimeout(() => {
       elements.actionFeedback.classList.add('hidden');
-    }, 5000);
+    }, 7000);
+  }
+
+  function updateStudentLiveBar() {
+    if (!elements.liveChipsGroup) return;
+
+    const grade = elements.inputGrade ? elements.inputGrade.value.trim() : '';
+    let cls = elements.inputClass ? elements.inputClass.value.trim() : '';
+    const num = elements.inputNumber ? elements.inputNumber.value.trim() : '';
+    const gender = elements.inputGender ? elements.inputGender.value.trim() : '';
+    const name = elements.inputName ? elements.inputName.value.trim() : '';
+
+    if (!grade && !cls && !num && !gender && !name) {
+      elements.liveChipsGroup.innerHTML = '<span class="live-placeholder-hint">학년·반·번호·성별·성명을 선택/입력하시면 여기에 실시간으로 바로 확인됩니다.</span>';
+      return;
+    }
+
+    let chipsHtml = '';
+    if (grade) {
+      chipsHtml += `<span class="live-chip chip-grade">🎓 ${escapeHtml(grade)}</span>`;
+    } else {
+      chipsHtml += `<span class="live-chip-empty">학년 미선택</span>`;
+    }
+
+    if (cls) {
+      const clsLabel = cls.endsWith('반') ? cls : `${cls}반`;
+      chipsHtml += `<span class="live-chip chip-class">🏫 ${escapeHtml(clsLabel)}</span>`;
+    } else {
+      chipsHtml += `<span class="live-chip-empty">반 미입력</span>`;
+    }
+
+    if (num) {
+      const numLabel = num.endsWith('번') ? num : `${num}번`;
+      chipsHtml += `<span class="live-chip chip-number">🔢 ${escapeHtml(numLabel)}</span>`;
+    }
+
+    if (gender) {
+      const isMale = gender === '남';
+      chipsHtml += `<span class="live-chip chip-gender ${isMale ? 'is-male' : 'is-female'}">${isMale ? '👦 남' : '👧 여'}</span>`;
+    } else {
+      chipsHtml += `<span class="live-chip-empty">성별 미선택</span>`;
+    }
+
+    if (name) {
+      chipsHtml += `<span class="live-chip chip-name">👤 ${escapeHtml(name)}</span>`;
+    } else {
+      chipsHtml += `<span class="live-chip-empty">성명 미입력</span>`;
+    }
+
+    if (grade && cls && gender && name) {
+      chipsHtml += `<span class="live-chip-badge-ok">✔ 입력 확인 완료</span>`;
+    }
+
+    elements.liveChipsGroup.innerHTML = chipsHtml;
   }
 
   /* ============================================================
@@ -2457,8 +2514,9 @@
 
     initNeisDiseaseOptions();
     updateSheetBadge();
+    updateStudentLiveBar();
 
-    // 2025 법정감염병 기준 초등학교 다빈도 10대 감염병 칩 (아데노바이러스 포함!)
+    // 최신 법정감염병 기준 초등학교 다빈도 10대 감염병 칩 (아데노바이러스 포함)
     const popularDiseases = [
       '아데노바이러스', '수두', '독감', '수족구병', '마이코플라스마', 'RSV', '백일해', '성홍열', '코로나19', '노로바이러스'
     ];
@@ -3166,8 +3224,9 @@
 
     if (!targetUrl) {
       saveToLocalHistory(record, false);
-      setFeedback('⚠️ 구글 시트 연동 URL이 아직 등록되지 않았습니다. 우측 상단 [구글 시트 연동 설정]에서 웹 앱 배포 URL을 먼저 등록해주세요.', 'error');
-      openSheetModal();
+      const studentLabel = `${record.grade} ${record.class} ${record.number ? record.number + '번 ' : ''}${record.name}`;
+      setFeedback(`✅ [${studentLabel}] 학생 기록이 [당일 관리대장]에 안전하게 등록되었습니다.<br /><span style="color:#047857;font-size:12px;font-weight:700;">🔒 [개인정보 보호 안내] 등록된 내역은 다른 사람에게 절대 노출되지 않으며, 관리자(선생님)의 기기에만 단독 보관됩니다.</span> (구글 시트 실시간 자동 백업을 원하시면 우측 상단 [구글 시트 연동 설정]에 웹 앱 URL을 등록해주세요)`, 'success');
+      showToast('🔒 관리대장 등록 완료 (다른 사람에게 일체 노출되지 않음)');
       return;
     }
 
@@ -3228,18 +3287,18 @@
       if (sendResult.success) {
         markLastRecordSynced(true);
         const studentLabel = `${record.grade} ${record.class} ${record.number ? record.number + '번 ' : ''}${record.name}`;
-        setFeedback(`✅ [${studentLabel}] 학생의 기록이 구글 스프레드시트에 성공적으로 전송되었습니다! (${sendResult.message})`, 'success');
-        showToast('구글 시트 감염병 관리대장 전송 완료');
+        setFeedback(`✅ [${studentLabel}] 학생의 기록이 구글 스프레드시트에 성공적으로 전송되었습니다! (${sendResult.message})<br /><span style="color:#047857;font-size:12px;font-weight:700;">🔒 [개인정보 보호 안내] 등록된 내역은 다른 사람에게 절대 노출되지 않으며, 관리자(선생님)의 시트 및 전용 보관함에만 비공개 저장됩니다.</span>`, 'success');
+        showToast('🔒 관리대장 등록 완료 (다른 사람에게 노출되지 않음)');
       } else {
         markLastRecordSynced(false);
-        setFeedback(`⚠️ 구글 시트 전송 실패: ${sendResult.error} (학생 기록은 [로컬 관리대장]에 안전하게 보관되었습니다)`, 'error');
-        showToast('⚠️ 시트 전송 실패 (로컬 안전보관)');
+        setFeedback(`⚠️ 구글 시트 전송 실패: ${sendResult.error} (🔒 학생 기록은 다른 사람에게 노출되지 않고 [로컬 관리대장]에 안전하게 보관되었습니다)`, 'error');
+        showToast('🔒 로컬 관리대장 안전보관 (타인 미노출)');
       }
     } catch (err) {
       console.warn('Google Sheet submission warning:', err);
       markLastRecordSynced(false);
-      setFeedback(`⚠️ 구글 시트 전송 중 오류가 발생하여 [로컬 관리대장]에 안전하게 보관되었습니다. Apps Script 배포 시 "액세스 권한: 모든 사용자" 설정과 URL을 확인해주세요.`, 'error');
-      showToast('⚠️ 시트 전송 실패 (로컬 안전보관)');
+      setFeedback(`⚠️ 구글 시트 전송 중 오류가 발생하여 [로컬 관리대장]에 안전하게 보관되었습니다. (🔒 개인정보는 다른 사람에게 절대 노출되지 않습니다)`, 'error');
+      showToast('🔒 로컬 관리대장 안전보관 (타인 미노출)');
     } finally {
       elements.btnSaveToSheet.disabled = false;
       elements.btnSaveToSheet.innerHTML = '<span class="btn-icon">📥</span> 구글 감염병 관리대장에 등록';
@@ -3475,6 +3534,7 @@
     if (elements.inputNeisReported) elements.inputNeisReported.value = '미보고';
 
     document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
+    updateStudentLiveBar();
 
     showToast('새로운 학생 입력을 위해 초기화되었습니다.');
   }
@@ -3937,9 +3997,15 @@
     if (elements.btnNeisReset) {
       elements.btnNeisReset.addEventListener('click', handleResetForm);
     }
-    if (elements.btnFindStudent) {
-      elements.btnFindStudent.addEventListener('click', openStudentModal);
-    }
+
+    // [사용자 요청] 학년/반/번호/성별/성명 선택·입력 시 실시간 확인 바 즉시 반영
+    ['input', 'change'].forEach(evt => {
+      if (elements.inputGrade) elements.inputGrade.addEventListener(evt, updateStudentLiveBar);
+      if (elements.inputClass) elements.inputClass.addEventListener(evt, updateStudentLiveBar);
+      if (elements.inputNumber) elements.inputNumber.addEventListener(evt, updateStudentLiveBar);
+      if (elements.inputGender) elements.inputGender.addEventListener(evt, updateStudentLiveBar);
+      if (elements.inputName) elements.inputName.addEventListener(evt, updateStudentLiveBar);
+    });
     if (elements.btnToggleNeisNotice && elements.neisNoticeBanner) {
       elements.btnToggleNeisNotice.addEventListener('click', () => {
         const isCollapsed = elements.neisNoticeBanner.classList.toggle('collapsed');

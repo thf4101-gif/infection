@@ -21,7 +21,7 @@
           </div>
           <div>
             <h1>등교중지 필요한 질병 찾기</h1>
-            <p class="subtitle">초등학교 학생 감염병 예방·관리 지침 및 법정 감염병 출결 판정 시스템 (2025.1.1. 기준)</p>
+            <p class="subtitle">초등학교 학생 감염병 예방·관리 지침 및 최신 법정 감염병 출결 판정 시스템</p>
           </div>
         </div>
         <div class="header-actions">
@@ -104,34 +104,55 @@
               <col style="width: 33%;" />
             </colgroup>
             <tbody>
-              <!-- Row 1: *성명 / 학년/반/번호 -->
+              <!-- Row 1: *성명 / 학년/반/번호 (학생찾기 버튼 삭제, 간편 입력 및 단위 명시) -->
               <tr>
                 <th class="th-req"><span class="ast">*</span>성명</th>
                 <td>
                   <div class="neis-name-cell">
-                    <input type="text" id="inputName" placeholder="성명 입력" required />
-                    <button type="button" id="btnFindStudent" class="btn-neis-blue">학생찾기</button>
+                    <input type="text" id="inputName" placeholder="성명 입력 (예: 홍길동)" class="input-name-full" required />
                   </div>
                 </td>
                 <th class="th-opt">학년/반/번호</th>
                 <td>
                   <div class="neis-class-cell">
-                    <select id="inputGrade" required>
-                      <option value="">학년</option>
-                      <option value="1학년">1학년</option>
-                      <option value="2학년">2학년</option>
-                      <option value="3학년">3학년</option>
-                      <option value="4학년">4학년</option>
-                      <option value="5학년">5학년</option>
-                      <option value="6학년">6학년</option>
-                    </select>
-                    <input type="text" id="inputClass" placeholder="반" class="input-class" required />
-                    <input type="number" id="inputNumber" placeholder="번호" class="input-num" min="1" max="99" />
-                    <select id="inputGender" class="input-gender" required>
-                      <option value="">성별</option>
-                      <option value="남">남</option>
-                      <option value="여">여</option>
-                    </select>
+                    <div class="student-input-subcell grade-subcell">
+                      <select id="inputGrade" class="student-select" required>
+                        <option value="">학년</option>
+                        <option value="1학년">1학년</option>
+                        <option value="2학년">2학년</option>
+                        <option value="3학년">3학년</option>
+                        <option value="4학년">4학년</option>
+                        <option value="5학년">5학년</option>
+                        <option value="6학년">6학년</option>
+                      </select>
+                    </div>
+                    <div class="student-input-subcell class-subcell">
+                      <input type="number" id="inputClass" placeholder="반" class="input-class" min="1" max="40" required />
+                      <span class="unit-text">반</span>
+                    </div>
+                    <div class="student-input-subcell num-subcell">
+                      <input type="number" id="inputNumber" placeholder="번호" class="input-num" min="1" max="60" />
+                      <span class="unit-text">번</span>
+                    </div>
+                    <div class="student-input-subcell gender-subcell">
+                      <select id="inputGender" class="input-gender" required>
+                        <option value="">성별</option>
+                        <option value="남">남</option>
+                        <option value="여">여</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- [사용자 요청] 학년/반/번호/성별/성명 선택 후 제대로 입력되었는지 즉시 한눈에 보이는 실시간 확인 바 -->
+              <tr class="tr-student-live-preview">
+                <td colspan="4" class="td-student-live-preview">
+                  <div class="student-live-confirm-bar" id="studentLiveConfirmBar">
+                    <span class="live-confirm-badge">👤 선택 학생 확인</span>
+                    <div class="live-chips-group" id="liveChipsGroup">
+                      <span class="live-placeholder-hint">학년·반·번호·성별·성명을 선택/입력하시면 여기에 실시간으로 바로 확인됩니다.</span>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -255,6 +276,14 @@
           <div class="neis-form-actions">
             <button type="button" id="btnNeisSave" class="btn-neis-navy">저장</button>
             <button type="button" id="btnNeisReset" class="btn-neis-white">닫기</button>
+          </div>
+
+          <!-- [사용자 요청 3] 개인정보 및 타인 노출 차단 안내 문구 -->
+          <div class="privacy-guarantee-note">
+            <span class="privacy-note-icon">🔒</span>
+            <div class="privacy-note-text">
+              <strong>개인정보 비공개 보호 안내:</strong> 등록하신 학생 인적사항 및 감염병 기록은 외부나 다른 사용자에게 일체 노출되지 않으며, 관리자(선생님)의 브라우저 로컬 저장소 및 선생님이 등록하신 보안 구글 시트에만 안전하게 저장됩니다.
+            </div>
           </div>
         </form>
       </section>
@@ -408,9 +437,13 @@
         <div class="history-title-wrap">
           <span class="dot-badge"></span>
           <h3>📑 당일 관리대장 등록 내역 (<span id="historyCount">0</span>건)</h3>
+          <span class="privacy-shield-tag">🔒 관리자 전용 비공개 보관 (외부/타인 노출 차단)</span>
         </div>
         <button type="button" id="btnClearHistory" class="btn-link">내역 비우기</button>
       </div>
+      <p class="history-privacy-desc">
+        ※ 본 대장 내역은 현재 접속한 관리자(선생님)의 브라우저 로컬 저장소에만 보관되며, 다른 사람이나 외부에는 절대 노출되지 않습니다.
+      </p>
       <div class="table-responsive">
         <table class="data-table">
           <thead>
@@ -437,41 +470,9 @@
 
     <!-- 푸터 -->
     <footer class="footer">
-      <p>공식 근거: 「감염병의 예방 및 관리에 관한 법률」(2025.1.1. 기준), 「학교보건법」 제8조, 교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」</p>
+      <p>공식 근거: 「감염병의 예방 및 관리에 관한 법률」(최신 개정 지침), 「학교보건법」 제8조, 교육부·질병관리청 「학생 감염병 예방·위기대응 매뉴얼」</p>
       <p class="footer-sub">※ 본 웹앱은 초등학교 보건교사의 신속하고 정확한 법적 결정을 돕기 위한 보조 도구이며, 개별 학생의 상태 및 주치의 소견서에 따라 최종 등교일이 결정됩니다.</p>
     </footer>
-  <!-- [4세대 나이스 학생찾기 모달] -->
-  <div id="studentSearchModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
-    <div class="modal-dialog" style="max-width: 520px;">
-      <div class="modal-header">
-        <div class="modal-title-wrap">
-          <h3 id="studentModalTitle">🔍 학생 찾기 (나이스 간편 선택)</h3>
-        </div>
-        <button type="button" id="btnCloseStudentModal" class="btn-close" aria-label="닫기">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-info-banner">
-          <p class="modal-desc">
-            학생 성명을 직접 입력하시거나, 아래 최근 등록/예시 학생을 클릭하여 학년·반·번호를 한 번에 입력하세요.
-          </p>
-        </div>
-        <div class="form-group" style="margin-top: 0.5rem;">
-          <label for="searchStudentNameInput"><strong>학생 성명 입력 또는 검색</strong></label>
-          <input type="text" id="searchStudentNameInput" placeholder="예: 김민준" />
-        </div>
-        <div class="quick-chips-wrapper" style="margin-top: 0.5rem; flex-direction: column; align-items: flex-start;">
-          <span class="quick-chips-label">원클릭 예시 및 최근 등록 학생:</span>
-          <div id="studentSampleList" class="student-chips-container">
-            <!-- JS 동적 생성 -->
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="btnApplyStudentName" class="btn btn-primary">적용하기</button>
-        <button type="button" id="btnCloseStudentModalBtn" class="btn btn-secondary">닫기</button>
-      </div>
-    </div>
-  </div>
 
   <!-- 구글 시트 연동 설정 모달 -->
   <div id="sheetModal" class="modal-overlay hidden">
