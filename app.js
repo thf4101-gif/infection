@@ -2299,6 +2299,7 @@
   const STATE = {
     selectedDisease: null,
     sheetUrl: localStorage.getItem('school_sheet_url') || '',
+    schoolName: localStorage.getItem('school_name') || '',
     history: JSON.parse(localStorage.getItem('school_disease_history') || '[]')
   };
 
@@ -2379,9 +2380,13 @@
     sheetModal: document.getElementById('sheetModal'),
     btnCloseModal: document.getElementById('btnCloseModal'),
     inputAppsScriptUrl: document.getElementById('inputAppsScriptUrl'),
+    inputSchoolName: document.getElementById('inputSchoolName'),
     btnDiagnoseUrl: document.getElementById('btnDiagnoseUrl'),
     btnTestConnection: document.getElementById('btnTestConnection'),
     btnSaveSheetUrl: document.getElementById('btnSaveSheetUrl'),
+    schoolShareBox: document.getElementById('schoolShareBox'),
+    outputSchoolShareUrl: document.getElementById('outputSchoolShareUrl'),
+    btnCopyShareUrl: document.getElementById('btnCopyShareUrl'),
     modalTestResult: document.getElementById('modalTestResult'),
 
     btnDownloadCodeGs: document.getElementById('btnDownloadCodeGs'),
@@ -2513,6 +2518,7 @@
     }
 
     initNeisDiseaseOptions();
+    applySchoolUrlParams();
     updateSheetBadge();
     updateStudentLiveBar();
 
@@ -2537,9 +2543,70 @@
     bindEvents();
   }
 
+  // URL 파라미터(?id=... 또는 ?sheet=... & ?school=...)를 읽어 학교별 자동 연동 수행
+  function applySchoolUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const scriptId = params.get('id');
+    const sheetParam = params.get('sheet');
+    const schoolParam = params.get('school');
+
+    let updated = false;
+    if (scriptId && scriptId.trim()) {
+      const fullUrl = `https://script.google.com/macros/s/${scriptId.trim()}/exec`;
+      STATE.sheetUrl = fullUrl;
+      localStorage.setItem('school_sheet_url', fullUrl);
+      updated = true;
+    } else if (sheetParam && sheetParam.trim().startsWith('http')) {
+      STATE.sheetUrl = sheetParam.trim();
+      localStorage.setItem('school_sheet_url', STATE.sheetUrl);
+      updated = true;
+    }
+
+    if (schoolParam !== null && schoolParam.trim()) {
+      STATE.schoolName = schoolParam.trim();
+      localStorage.setItem('school_name', STATE.schoolName);
+    }
+
+    if (updated) {
+      setTimeout(() => {
+        const prefix = STATE.schoolName ? `[${STATE.schoolName}] ` : '';
+        showToast(`✅ ${prefix}구글 감염병 관리대장에 자동 연결되었습니다.`);
+      }, 300);
+    }
+  }
+
+  // 현재 설정된 URL과 학교명으로 학교 전용 배포 링크 생성
+  function buildSchoolShareUrl(url, schoolName) {
+    if (!url || !url.trim().startsWith('http')) return '';
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareParams = new URLSearchParams();
+    const stdMatch = url.trim().match(/^https:\/\/script\.google\.com\/macros\/s\/([^/]+)\/exec$/);
+    if (stdMatch && stdMatch[1]) {
+      shareParams.set('id', stdMatch[1]);
+    } else {
+      shareParams.set('sheet', url.trim());
+    }
+    if (schoolName && schoolName.trim()) {
+      shareParams.set('school', schoolName.trim());
+    }
+    return `${baseUrl}?${shareParams.toString()}`;
+  }
+
+  function updateShareBoxUI() {
+    if (!elements.schoolShareBox || !elements.outputSchoolShareUrl) return;
+    const shareUrl = buildSchoolShareUrl(STATE.sheetUrl, STATE.schoolName);
+    if (shareUrl) {
+      elements.outputSchoolShareUrl.value = shareUrl;
+      elements.schoolShareBox.classList.remove('hidden');
+    } else {
+      elements.outputSchoolShareUrl.value = '';
+      elements.schoolShareBox.classList.add('hidden');
+    }
+  }
+
   function updateSheetBadge() {
     if (STATE.sheetUrl && STATE.sheetUrl.trim().startsWith('http')) {
-      elements.sheetStatusBadge.textContent = '연동됨';
+      elements.sheetStatusBadge.textContent = STATE.schoolName ? `${STATE.schoolName} 연동됨` : '연동됨';
       elements.sheetStatusBadge.className = 'sheet-badge connected';
     } else {
       elements.sheetStatusBadge.textContent = '미연결';
@@ -3613,10 +3680,14 @@
   ============================================================ */
   function openSheetModal() {
     elements.inputAppsScriptUrl.value = STATE.sheetUrl || '';
+    if (elements.inputSchoolName) {
+      elements.inputSchoolName.value = STATE.schoolName || '';
+    }
     elements.modalTestResult.classList.add('hidden');
     if (elements.codeGsTextarea) {
       elements.codeGsTextarea.value = CODE_GS_FULL_SOURCE;
     }
+    updateShareBoxUI();
     elements.sheetModal.classList.remove('hidden');
   }
 
@@ -3626,12 +3697,16 @@
 
   function saveSheetUrl() {
     let url = elements.inputAppsScriptUrl.value.trim();
+    let schoolName = elements.inputSchoolName ? elements.inputSchoolName.value.trim() : '';
+
     if (!url) {
       STATE.sheetUrl = '';
+      STATE.schoolName = '';
       localStorage.removeItem('school_sheet_url');
+      localStorage.removeItem('school_name');
       updateSheetBadge();
+      updateShareBoxUI();
       showToast('연동 URL이 비워졌습니다. (로컬 저장 모드)');
-      closeSheetModal();
       return;
     }
 
@@ -3649,10 +3724,16 @@
     }
 
     STATE.sheetUrl = url;
+    STATE.schoolName = schoolName;
     localStorage.setItem('school_sheet_url', url);
+    if (schoolName) {
+      localStorage.setItem('school_name', schoolName);
+    } else {
+      localStorage.removeItem('school_name');
+    }
     updateSheetBadge();
-    showToast('구글 시트 연동 URL이 저장되었습니다.');
-    closeSheetModal();
+    updateShareBoxUI();
+    showToast('✅ 저장 완료! 아래 생성된 [우리 학교 전용 링크]를 복사해 선생님들께 배포하세요.');
   }
 
   function handleDiagnoseUrl() {
@@ -3940,6 +4021,19 @@
     });
     elements.btnSaveSheetUrl.addEventListener('click', saveSheetUrl);
     elements.btnTestConnection.addEventListener('click', testSheetConnection);
+    if (elements.btnCopyShareUrl) {
+      elements.btnCopyShareUrl.addEventListener('click', () => {
+        const shareUrl = elements.outputSchoolShareUrl ? elements.outputSchoolShareUrl.value.trim() : '';
+        if (!shareUrl) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('📋 우리 학교 전용 배포 링크가 복사되었습니다! 선생님들께 전달하세요.');
+          }).catch(() => fallbackCopyText(shareUrl));
+        } else {
+          fallbackCopyText(shareUrl);
+        }
+      });
+    }
 
     // 6. 가정안내문 팝업 모달 이벤트
     if (elements.btnCloseNoticeModal) {

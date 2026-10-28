@@ -538,16 +538,47 @@
             <small class="field-help">스프레드시트 주소(docs.google.com)가 아닌, Apps Script [배포]에서 발급된 <strong>"/exec"</strong> 주소여야 합니다.</small>
           </div>
 
+          <div class="form-group" style="margin-top: 10px;">
+            <label for="inputSchoolName"><strong>학교명 (선택사항 - 입력 시 상단 배지 및 전용 링크에 표시)</strong></label>
+            <input 
+              type="text" 
+              id="inputSchoolName" 
+              placeholder="예: 행복초등학교"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+            />
+          </div>
+
           <div class="modal-actions">
             <button type="button" id="btnTestConnection" class="btn btn-secondary">
               <span class="btn-icon">⚡</span> 연동 테스트 전송
             </button>
             <button type="button" id="btnSaveSheetUrl" class="btn btn-primary">
-              저장하기
+              저장 및 학교 전용 링크 생성
             </button>
           </div>
 
           <div id="modalTestResult" class="modal-test-result hidden"></div>
+
+          <!-- 학교별 교직원 배포용 전용 링크 자동 생성 박스 -->
+          <div id="schoolShareBox" class="hidden" style="margin-top: 14px; padding: 14px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px;">
+            <div style="font-weight: 700; color: #166534; margin-bottom: 6px;">
+              🔗 우리 학교 교직원 배포용 전용 링크 (클릭 한 번으로 자동 연동)
+            </div>
+            <p style="font-size: 13px; color: #15803d; margin: 0 0 8px 0; line-height: 1.5;">
+              아래 링크를 본교 선생님들께 전달하세요. 이 링크로 접속하면 복잡한 설정 없이 <strong>즉시 우리 학교 구글 시트와 자동 연결</strong>됩니다. (타교 보건선생님께는 기본 주소만 알려주시면 각자 자기 학교 전용 링크를 만들 수 있습니다)
+            </p>
+            <div class="url-input-group">
+              <input 
+                type="text" 
+                id="outputSchoolShareUrl" 
+                readonly 
+                style="background: #ffffff; color: #0f172a; font-weight: 600;"
+              />
+              <button type="button" id="btnCopyShareUrl" class="btn btn-primary">
+                <span class="btn-icon">📋</span> 전용 링크 복사
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- 3단계: 연동이 안 될 때 원인 체크리스트 -->
