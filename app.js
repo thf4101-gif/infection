@@ -1623,6 +1623,26 @@
       teacherNotice: '환경 위생 점검.',
       neisDuty: '보고대상 (24시간 이내)'
     },
+    {
+      id: 'syphilis',
+      name: '매독 (Syphilis)',
+      aliases: ['매독', 'syphilis', '트레포네마', '1기매독', '2기매독', '잠복매독', '3기매독', '선천성매독'],
+      code: 'A51-A53',
+      legalGrade: '제3급 법정감염병 (전수감시)',
+      status: 'none',
+      statusText: '등교중지 불필요',
+      defaultDays: 0,
+      periodDesc: '일상적인 학교생활(식사, 대화, 악수, 학용품·화장실 공동이용 등)로는 전파되지 않으므로 법적 등교중지 대상이 아닙니다.',
+      releaseCondition: '일상 등교 가능 (피부·점막 궤양 병변이 있는 급성기 1·2기의 경우 병변 밀폐 드레싱 및 전문 항생제 치료 권고).',
+      legalCriteria: '「감염병예방법」 제3급 법정감염병(전수감시 대상, 발생 24시간 이내 보건소 신고). 일상 학교 접촉으로 전파되지 않아 「학교보건법」상 등교중지 비대상.',
+      primaryLaw: '「감염병의 예방 및 관리에 관한 법률」 제2조 제4호(제3급감염병) 및 제11조(신고의무), 「학교보건법」 제8조',
+      manualSource: '질병관리청 「매독 관리지침」 및 교육부 「학생 감염병 예방·위기대응 매뉴얼」',
+      attendanceRule: '정상 등교 (병원 진료 및 치료로 결석 시 의사소견서/진료확인서 제출로 질병결석 처리)',
+      kdcaGuide: '질병관리청 「매독 관리지침」 - 2024년 1월 1일부터 제4급 표본감시에서 제3급 전수감시 감염병으로 상향 조정. 발생 또는 유행 시 24시간 이내 관할 보건소에 신고. 주요 단계: 1기(무통성 궤양·경성하감), 2기(전신 발진 및 발열 등), 잠복매독, 3기(고무종, 심혈관·신경계 합병증), 선천성 매독으로 분류.',
+      documentReq: '해당 없음 (치료·진료로 인한 결석 시 진료확인서 또는 소견서)',
+      teacherNotice: '※ 2024년 1월 1일부터 제4급에서 [제3급 법정감염병 (전수감시)]으로 상향 조정됨 (발생 또는 유행 시 24시간 이내 관할 보건소 신고 대상).\n※ 학생의 민감한 개인 의료정보이므로 철저한 비밀 보장과 인권 보호가 필수적이며, 일상적인 학교생활로는 전파되지 않음을 숙지하여 과도한 불안이나 차별이 발생하지 않도록 지도.',
+      neisDuty: '보고대상 (발생 시 24시간 이내 신고)'
+    },
 
     // ------------------------------------------------------------
     // [제4급 법정감염병 추가 (표본감시 질환)]
@@ -1905,26 +1925,6 @@
       kdcaGuide: '질병관리청 지침',
       documentReq: '진료확인서',
       teacherNotice: '수영장 물 접촉 주의.',
-      neisDuty: '보고대상'
-    },
-    {
-      id: 'syphilis',
-      name: '매독 (Syphilis)',
-      aliases: ['매독', 'syphilis', '트레포네마'],
-      code: 'A51-A53',
-      legalGrade: '제4급 법정감염병 (표본감시)',
-      status: 'none',
-      statusText: '등교중지 불필요',
-      defaultDays: 0,
-      periodDesc: '일상적인 학교생활 접촉으로 전파되지 않음',
-      releaseCondition: '일상 등교 가능.',
-      legalCriteria: '등교중지 비대상',
-      primaryLaw: '「학교보건법」',
-      manualSource: '교육부 감염병 매뉴얼',
-      attendanceRule: '해당 없음',
-      kdcaGuide: '질병관리청 매독 지침',
-      documentReq: '해당 없음',
-      teacherNotice: '비밀 보장 및 편견 방지.',
       neisDuty: '보고대상'
     },
     {
@@ -2759,8 +2759,9 @@
     { id: 'zika', label: '지카바이러스감염증' },
     { id: 'epidemic_typhus', label: '발진티푸스' },
     { id: 'murine_typhus', label: '발진열' },
+    { id: 'syphilis', label: '매독' },
 
-    // 7) 제4급 법정감염병 추가 (장관감염증, 기생충, 매독, 항생제 내성균)
+    // 7) 제4급 법정감염병 추가 (장관감염증, 기생충, 항생제 내성균)
     { id: 'campylobacter', label: '캄필로박터균 감염증' },
     { id: 'vibrio_parahaemolyticus', label: '장염비브리오균 감염증' },
     { id: 'clostridium_perfringens', label: '클로스트리듐 퍼프린젠스 감염증' },
@@ -2773,7 +2774,6 @@
     { id: 'amoebiasis', label: '이질아메바증' },
     { id: 'giardiasis', label: '람블편모충증' },
     { id: 'cryptosporidiosis', label: '크립토스포리디움증' },
-    { id: 'syphilis', label: '매독' },
     { id: 'enterobiasis', label: '요충증' },
     { id: 'ascariasis', label: '회충증' },
     { id: 'trichuriasis', label: '편충증' },

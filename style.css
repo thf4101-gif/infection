@@ -708,22 +708,27 @@ body.school-theme {
   display: flex;
   align-items: center;
   gap: 0.15rem;
+  flex-shrink: 0;
 }
 
 .student-input-subcell.grade-subcell {
-  flex: 1.25;
+  flex: 1.35;
+  min-width: 72px;
 }
 
 .student-input-subcell.class-subcell {
   flex: 1;
+  min-width: 50px;
 }
 
 .student-input-subcell.num-subcell {
   flex: 1;
+  min-width: 50px;
 }
 
 .student-input-subcell.gender-subcell {
-  flex: 0.95;
+  flex: 1;
+  min-width: 55px;
 }
 
 .student-input-subcell select,
@@ -732,14 +737,48 @@ body.school-theme {
   font-size: 0.88rem !important;
   font-weight: 700;
   color: #1e3a8a;
+  border: 1px solid #94a3b8;
+  border-radius: 3px;
+  background-color: #ffffff;
+  padding: 0.2rem 0.3rem;
+  box-sizing: border-box;
+}
+
+/* 숫자 입력 화살표(스피너)를 제거하여 입력 숫자가 잘리지 않고 명확하게 보이도록 처리 */
+.student-input-subcell input[type="number"]::-webkit-inner-spin-button,
+.student-input-subcell input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.student-input-subcell input[type="number"] {
+  -moz-appearance: textfield;
+  text-align: center;
+  font-weight: 800;
+  color: #1e3a8a;
+  letter-spacing: -0.5px;
+}
+
+.student-input-subcell select {
+  padding-left: 0.35rem;
+  padding-right: 0.2rem;
+  font-weight: 700;
+}
+
+.student-input-subcell select:focus,
+.student-input-subcell input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1.5px #2563eb;
+  background-color: #eff6ff;
 }
 
 .student-input-subcell .unit-text {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 800;
   color: #1e3a8a;
   white-space: nowrap;
   user-select: none;
+  margin-left: 0.1rem;
 }
 
 /* 실시간 학생 인적사항 확인 바 */
